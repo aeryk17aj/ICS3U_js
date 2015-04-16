@@ -1,0 +1,11 @@
+## Directories
+_css
+picture/assets
+
+## Files
+Thumbs.db
+*.html
+*.css
+*.gif
+*.jpg
+*.png
