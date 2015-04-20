@@ -32,7 +32,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			
 			//Velocity in 2 directions
 			dx : Math.floor(Math.random()*7)-3,
-			dy : -1
+			dy : -7
 			/*
 			display: function (){
 				this.color = color;
@@ -58,6 +58,13 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		ball.move = function(){
 			ball.x+=ball.dx;
 			ball.y+=ball.dy;
+		}
+		
+		ball.resetPosition = function(){
+			ball.x = w/2;
+			ball.y = h*(3/4);
+			ball.dx = Math.floor(Math.random()*7)-3;
+			ball.dy = -7;
 		}
 		
 		//Paddle object
@@ -114,6 +121,21 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		
 		ctx.fillStyle = "#FFFFFF";
 		paddle.display();
+		
+		//Upper wall
+		if(ball.y < ball.r){
+			ball.dy = ball.dy*(-1);	
+		}
+		
+		//Side walls
+		if(ball.y - ball.r > h){
+			ball.resetPosition();	
+		}
+		
+		//The bottom is a pit. The ball resets if it goes there
+		if(ball.x < ball.r || ball.x > w - ball.r){
+			ball.dx = ball.dx*(-1);	
+		}
 		
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
