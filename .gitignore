@@ -1,11 +1,9 @@
 ## Directories
-_css
 picture/assets
 
 ## Files
 Thumbs.db
-*.html
-*.css
+*.txt
 *.gif
 *.jpg
 *.png

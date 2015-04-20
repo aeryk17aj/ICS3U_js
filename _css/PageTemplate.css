@@ -1,0 +1,39 @@
+@charset "utf-8";
+/* CSS Document */
+body
+{
+font-size:25px;
+font-family:Arial, Helvetica, sans-serif;
+background-color:#C6DDDC;
+color:#000000;
+margin:5px;
+}
+
+h1 {
+color:#FFFFFF;
+font-size:35px;
+font-family:Arial, Helvetica, sans-serif;
+}
+h2 {
+font-size:30px;
+}
+h3 {
+font-size:25px;
+}
+h4 {
+font-size:20px;
+}
+th
+{
+font-size:23px;
+background-color:blue;
+color:#FFFFFF;
+}
+td
+{
+font-size:20px;
+}
+canvas
+{
+/*cursor:none;*/
+}
