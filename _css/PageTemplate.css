@@ -1,5 +1,5 @@
 @charset "utf-8";
-/* CSS Document */
+/* Universal CSS Document for most assignment pages*/
 body
 {
 font-size:25px;
@@ -7,6 +7,9 @@ font-family:Arial, Helvetica, sans-serif;
 background-color:#C6DDDC;
 color:#000000;
 margin:5px;
+float:right;
+position:relative;
+right:25%;
 }
 
 h1 {
