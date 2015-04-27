@@ -21,6 +21,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	//#4
 	var twentyNumbers = [];
 	var removeNum;
+	var spliced;
 	
 	
 	/////////////////////////////////
@@ -56,13 +57,15 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		//#4 Array value generator + number to be removed
 		for(var i = 0; i < 20; i++)
 		{
-			twentyNumbers[i] = Math.floor(Math.random()*9) + 1;	
+			twentyNumbers[i] = Math.floor(Math.random()*10) + 1;	
 		}
 		//#4 Step 2
 		//removeNum = Math.floor(Math.random()*10);
 		do {
 			removeNum = prompt("What number do you want to be removed? (1-10)", "1");
-		} while(!(removeNum >= 1 && removeNum <= 10) || !(removeNum instanceof int)) //It won't stop asking until it gets an input of 1-10
+		} while(!(removeNum >= 1 && removeNum <= 10)) //It won't stop asking until it gets an input of 1-10
+		
+		spliced = 0;
 		
 		
 	//////////
@@ -138,8 +141,11 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			if(twentyNumbers[i] == removeNum)
 			{
 				twentyNumbers.splice(i, 1);	
+				spliced++;
 			}
 		}
+		
+		ctx.fillText(spliced + " numbers were spliced.", 5 ,300);
 		
 		
 		
