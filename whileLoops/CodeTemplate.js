@@ -10,7 +10,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var mx, my;
 	var randNum;
 	var one, two, three, four, five, six, eight, nine, ten;
-	var inputString, canStillRepeat;
+	var inputString;
 	var soldiers, creatures, victoryChance, tieChance;
 	
 	/////////////////////////////////
@@ -39,14 +39,12 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	nine=0;
 	ten=0;
 	
-	canStilRepeat = true;
-	
 	soldiers=25;
 	creatures=50;
-	victoryChance=7.5;
+	victoryChance=7.5; // out of 10
 	
 	//It only does it once when entered correctly. Putting it in paint() will make it display repeatedly because it's a do/while loop
-	//2)
+	//#2
 	do{
 		inputString = prompt("Say my name!","the answer is Heisenberg");
 	}while(inputString != "Heisenberg");
@@ -78,13 +76,19 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		ctx.fillStyle="black";
 		randNum = Math.floor(Math.random()*10)+1;
 		
-		//1)
+		ctx.fillStyle = 'blue';
+		ctx.fillRect(95,20, 60, 60);
+		ctx.fillStyle = "#00FF00";
+		ctx.fillText("Reset", 110,50);
+		
+		ctx.fillStyle='black';
+		//#1
 		while(randNum != 7){
 			ctx.fillText(randNum, 95, 100 + (randNum*10));
 			//displays numbers in order, except 7 of course
 			//if it were to generate 7, the fillText would've displayed it
 			
-			//1b)
+			//#1b
 		    if(randNum == 1)one++;
 			else if(randNum == 2)two++;	
 			else if(randNum == 3)three++;	
@@ -99,7 +103,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			randNum = Math.floor(Math.random()*10)+1;
 		}
 		
-		//3) This is what chooses the resolution of the battle
+		//#3 This is what chooses the resolution of the battle
 		while(soldiers > 0 && creatures > 0){
 			if(Math.floor(Math.random()*10)+1 <= victoryChance){
 				creatures-=1;	
@@ -108,7 +112,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			}
 		}
 		
-		//1b) - Result Display
+		//#1b - Result Display
 		ctx.fillText(one, 110, 110);
 		ctx.fillText(two, 110, 120);
 		ctx.fillText(three, 110, 130);
@@ -119,20 +123,15 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		ctx.fillText(nine, 110, 190);
 		ctx.fillText(ten, 110, 200);
 		
-		//3) - Soldier/Creature Battle - Result Display 
+		//#3 - Soldier/Creature Battle - Result Display 
 	    ctx.fillText("Soldiers Left: " + soldiers,100,300);
-		ctx.fillText("Cretures Left: " + creatures,100,310);
+		ctx.fillText("Creatures Left: " + creatures,100,310);
 		if(soldiers == 0 && creatures > 0){
 			ctx.fillText("The creatures have dominated!", 100, 320);	
 		} else if(soldiers > 0 && creatures == 0){
 			ctx.fillText("The soldiers did it!", 100, 320);		
 		}
-
-		/* EXTRA - Thoughts:
-		The assignment with least success in first tries. It got tedious but eventually got to the end.
-		I would've used a switch statement for the number tracker but... meh.
-		*/
-		
+	
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
 	
 
@@ -154,7 +153,24 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	///////////////
 	canvas.addEventListener('click', function (evt){
 		
-		
+		//Resets both the counter and the battle
+		if(mx > 95 && mx < 95 + 60){
+			if(my > 20 && my < 20 + 60){
+				one=0;
+				two=0;
+				three=0;
+				four=0;
+				five=0;
+				six=0;
+				eight=0;
+				nine=0;
+				ten=0;
+				
+				soldiers=25;
+				creatures=50;
+				victoryChance=7.5;
+			}
+		}
 	      
 	}, false);
 
