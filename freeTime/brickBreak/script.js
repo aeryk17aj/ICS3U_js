@@ -32,40 +32,29 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			
 			//Velocity in 2 directions
 			dx : Math.floor(Math.random()*7)-3,
-			dy : -7
-			/*
-			display: function (){
-				this.color = color;
-				ctx.beginPath();
-				ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
-				ctx.stroke();
-				ctx.fillStyle = "#FFFFFF";
-				ctx.fill();
-			}
-			*/
-			
+			dy : -7		
 		};
 		
 		ball.display = function(color){
-			ball.color = color;
+			this.color = color;
 			ctx.beginPath();
-			ctx.arc(ball.x, ball.y, ball.r, 0, 2*Math.PI);
+			ctx.arc(this.x, this.y, this.r, 0, 2*Math.PI);
 			ctx.stroke();
 			ctx.fillStyle = color;
 			ctx.fill();
-		}
+		};
 		
 		ball.move = function(){
 			ball.x+=ball.dx;
 			ball.y+=ball.dy;
-		}
+		};
 		
 		ball.resetPosition = function(){
 			ball.x = w/2;
 			ball.y = h*(3/4);
 			ball.dx = Math.floor(Math.random()*7)-3;
 			ball.dy = -7;
-		}
+		};
 		
 		//Paddle object
 		paddle = {
@@ -74,13 +63,15 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			w : 100,
 			
 			//Starting position
-			x : w/2 - this.w/2, //Perfectly centred horizontally
+			x : (w/2) - 50, //Perfectly centred horizontally
 			y : h*(15/16)
-		}
+		};
 		
-		paddle.display = function(){
-			ctx.fillRect(paddle.x, paddle.y, paddle.x + paddle.w, paddle.y + paddle.h);	
-		}
+		paddle.display = function(color){
+			this.color = color;
+			ctx.fillStyle = color;
+			ctx.fillRect(this.x, this.y, this.w, this.h);	
+		};
 		
 		
 		
@@ -115,27 +106,33 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		ctx.fillStyle = "#222222";
 		ctx.fillRect(0,0, w, h);	
 		
-		
 		ball.display("#009900");
 		ball.move();
 		
-		ctx.fillStyle = "#FFFFFF";
-		paddle.display();
+		paddle.display("white");
 		
-		//Upper wall
+		if(ball.x >= paddle.x + ball.r && ball.x <= (paddle.x +  paddle.w) - ball.r){
+			if(ball.y + ball.r >= paddle.y){
+				ball.dy = ball.dy*(-1);
+			}
+		}
+		
+		//Upper wall bounce
 		if(ball.y < ball.r){
 			ball.dy = ball.dy*(-1);	
 		}
 		
-		//Side walls
+		//Side walls bounce
+		if(ball.x < ball.r || ball.x > w - ball.r){
+			ball.dx = ball.dx*(-1);	
+		}
+		
+		//The bottom is a pit. The ball resets if it goes there
 		if(ball.y - ball.r > h){
 			ball.resetPosition();	
 		}
 		
-		//The bottom is a pit. The ball resets if it goes there
-		if(ball.x < ball.r || ball.x > w - ball.r){
-			ball.dx = ball.dx*(-1);	
-		}
+		
 		
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
@@ -210,6 +207,21 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 
 	window.addEventListener('keydown', function(evt){
 		var key = evt.keyCode;
+		//37 Left
+		//39 Right
+		
+		//prevents arrow scrolling (includes PgUp and PgDown)
+		if($.inArray(key, ar) > -1){
+			evt.preventDefault();
+			return false;	
+		}
+		
+		if(key == 37){
+			paddle.x+=(-7);
+		} else if(key == 39){
+			paddle.x+=7;
+		}
+		console.log(paddle.x);
 		
 	//p 80
 	//r 82
