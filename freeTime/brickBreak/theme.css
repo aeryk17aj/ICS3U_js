@@ -2,14 +2,15 @@ body
 {
 background-color:#C6DDDC;
 margin:5px;
-
-/* Centred content */
-float:right;
-position:relative;
-right:25%;
 }
 
 #canvas
 {
 /*cursor:none;*/
+margin-top:0px;
+}
+
+#sidebar {
+	float: right;
+	margin-top:0px;
 }

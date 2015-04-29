@@ -11,6 +11,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var screenState;
 	var ball;
 	var paddle;
+	var ar;
 
 	
 	
@@ -23,6 +24,8 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	/////////////////////////////
 	function init()
 	{
+		ar = [33,34,35,36,38,40]; // array of keys not to move the webpage when pressed
+		
 		//Ball object
 		ball = {
 			//Starting position (centre coords + radius)
@@ -64,7 +67,9 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			
 			//Starting position
 			x : (w/2) - 50, //Perfectly centred horizontally
-			y : h*(15/16)
+			y : h*(15/16),
+			
+			s : 20
 		};
 		
 		paddle.display = function(color){
@@ -86,7 +91,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	//	Once you choose a good speed for your program, you will never need to update this file ever again.
 
 	if(typeof game_loop != "undefined") clearInterval(game_loop);
-		game_loop = setInterval(paint, 60);
+		game_loop = setInterval(paint, 14);
 	}
 
 	init();	
@@ -209,19 +214,25 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		var key = evt.keyCode;
 		//37 Left
 		//39 Right
-		
+		//A 65
+		//D 68
+		//alert(key);
 		//prevents arrow scrolling (includes PgUp and PgDown)
 		if($.inArray(key, ar) > -1){
 			evt.preventDefault();
 			return false;	
 		}
 		
-		if(key == 37){
-			paddle.x+=(-7);
-		} else if(key == 39){
-			paddle.x+=7;
+		if(key == 37 || key == 65){
+			if(paddle.x - paddle.s > 0){
+				paddle.x-=paddle.s;
+			}
+		} else if(key == 39 || key == 68){
+			if(paddle.x < w - paddle.w){
+				paddle.x+=paddle.s;
+			}
 		}
-		console.log(paddle.x);
+		//console.log(paddle.x);
 		
 	//p 80
 	//r 82
