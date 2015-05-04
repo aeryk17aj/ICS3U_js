@@ -7,10 +7,19 @@ margin:5px;
 #canvas
 {
 /*cursor:none;*/
+float:left
 margin-top:0px;
 }
 
 #sidebar {
+	display: block;
 	float: right;
-	margin-top:0px;
+	width:100px;
+	padding:10px 0 10px 80px;
+	margin: 0 0 0 50px
+	border: 1px solid black	
+}
+
+#content{
+	float: right:
 }

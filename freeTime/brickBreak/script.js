@@ -12,7 +12,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var ball;
 	var paddle;
 	var ar;
-
+	var bricks;
 	
 	
 	/////////////////////////////////
@@ -78,6 +78,9 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillRect(this.x, this.y, this.w, this.h);	
 		};
 		
+		for(int i = 0; i < 5; i++){
+			bricks[i] = new Brick(200 + (i*(brick.w + 5)), 100, "#FFFFFF");
+		}
 		
 		
 	//////////
@@ -116,9 +119,17 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		
 		paddle.display("white");
 		
+		//Paddle bounce
 		if(ball.x >= paddle.x + ball.r && ball.x <= (paddle.x +  paddle.w) - ball.r){
 			if(ball.y + ball.r >= paddle.y){
+			
+				//inverts the dy to simulate a bounce
 				ball.dy = ball.dy*(-1);
+				
+				//This increases the dx depending on how far it is from the middle of the paddle
+				//This encourages hitting the ball as near to the paddle's centre as possible 
+				//for more consistent bounces
+				ball.dx+=(ball.x - (paddle.w/2)) / (paddle.w)/2
 			}
 		}
 		
@@ -137,18 +148,22 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ball.resetPosition();	
 		}
 		
-		
-		
+		for(int i = 0; i < 5; i++){
+			bricks[i].display();
+		}
+	
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
 	//Brick base object
-	function brick(x, y, color) {
+	function Brick(x, y, color) {
 		this.x = x;
 		this.y = y;
 		this.w = 30;
 		this.h = 5;
+		this.color = color;
 		this.display = function() {
-			ctx.fillRect(x, y, x + w, y + h);	
+		    ctx.fillStyle = this.color;
+			ctx.fillRect(this.x, this.y, this.x + this.w, this.y + this.h);	
 		}
 	}
 	
