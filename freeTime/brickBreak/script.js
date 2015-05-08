@@ -25,6 +25,10 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	function init()
 	{
 		ar = [33,34,35,36,38,40]; // array of keys not to move the webpage when pressed
+		bricks = [];
+		bricks[0] = new Brick(200, 100);
+		bricks[1] = new Brick(255, 100);
+		bricks[2] = new Brick(310, 100);
 		
 		//Ball object
 		ball = {
@@ -67,7 +71,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			
 			//Starting position
 			x : (w/2) - 50, //Perfectly centred horizontally
-			y : h*(15/16),
+			y : 75,//h*(15/16)
 			
 			s : 20
 		};
@@ -78,9 +82,20 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillRect(this.x, this.y, this.w, this.h);	
 		};
 		
-		for(int i = 0; i < 5; i++){
-			bricks[i] = new Brick(200 + (i*(brick.w + 5)), 100, "#FFFFFF");
+		function Brick(x, y) {
+		this.x = x;
+		this.y = y;
+		this.w = 50;
+		this.h = 20;
 		}
+		
+		Brick.prototype.display = function(color){
+			this.color = color;
+			ctx.fillStyle = color;
+			ctx.fillRect(this.x, this.y, this.w, this.h);		
+		}
+		
+		
 		
 		
 	//////////
@@ -119,19 +134,32 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		
 		paddle.display("white");
 		
-		//Paddle bounce
+		//if within the paddle range (x)
 		if(ball.x >= paddle.x + ball.r && ball.x <= (paddle.x +  paddle.w) - ball.r){
-			if(ball.y + ball.r >= paddle.y){
+			//if the ball is right on top of the paddle
+			if(ball.y + ball.r >= paddle.y || (ball.y  + ball.r > paddle.y && ball.y + ball.r < paddle.y + paddle.h)){
 			
 				//inverts the dy to simulate a bounce
-				ball.dy = ball.dy*(-1);
+				//works only if the ball is going down
+				if(ball.dy == Math.abs(ball.dy)){
+					ball.dy = ball.dy*(-1);
+				}
 				
 				//This increases the dx depending on how far it is from the middle of the paddle
 				//This encourages hitting the ball as near to the paddle's centre as possible 
 				//for more consistent bounces
-				ball.dx+=(ball.x - (paddle.w/2)) / (paddle.w)/2
+				ball.dx+=(ball.x - (paddle.w/2)) / (paddle.w)/2;
+			}
+			
+			//right below the paddle (prevents triggering above, untested)
+			if(ball.y - ball.r <= paddle.y + paddle.h || ball.y - ball.r - Math.abs(ball.dy) <= paddle.y + paddle.h){
+				ball.dy = ball.dy*(-1);
 			}
 		}
+		
+		//bottom
+		if(ball.x)
+		
 		
 		//Upper wall bounce
 		if(ball.y < ball.r){
@@ -148,24 +176,18 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ball.resetPosition();	
 		}
 		
-		for(int i = 0; i < 5; i++){
-			bricks[i].display();
-		}
+		//Speed limiter, so the slight speed increase won't go too far when it glitches
+		if(ball.dx > 7) ball.dx = 7;
+		
+		
+		bricks[0].display("white");
+		bricks[1].display("red");
+		bricks[2].display("yellow");
+		
 	
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
-	//Brick base object
-	function Brick(x, y, color) {
-		this.x = x;
-		this.y = y;
-		this.w = 30;
-		this.h = 5;
-		this.color = color;
-		this.display = function() {
-		    ctx.fillStyle = this.color;
-			ctx.fillRect(this.x, this.y, this.x + this.w, this.y + this.h);	
-		}
-	}
+	
 	
 	
 	
@@ -187,7 +209,6 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	// Mouse Click
 	///////////////
 	canvas.addEventListener('click', function (evt){
-		
 		
 	      
 	}, false);
