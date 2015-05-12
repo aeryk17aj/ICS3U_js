@@ -70,13 +70,11 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		
 		//Paddle object
 		paddle = {
-			//long, not tall
 			h : 10,
 			w : 100,
 			
 			//Starting position
 			x : w/2 - 50, //Perfectly centred horizontally
-			//50 = this.w/2
 			y : h*(15/16), //Near the bottom
 			
 			s : 20 //speed limit
@@ -136,8 +134,14 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 
 		if(screenState == 0)
 		{
+			//BG
 			ctx.fillStyle = "#222222";
 			ctx.fillRect(0,0, w, h);
+
+			//Placeholder content
+			ctx.font = "13px Arial";
+			ctx.fillStyle = "#FFFFFF";
+			ctx.fillText("Menu screen under construction. Press Enter to start the game.", 5, h-10);
 		}
 		
 		////////
@@ -145,12 +149,15 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		////////
 		if(screenState == 1) 
 		{
+			//BG
 			ctx.fillStyle = "#222222";
 			ctx.fillRect(0,0, w, h);	
 			
+			//Ball init
 			ball.display("#009900");
 			ball.move();
 			
+			//Paddle init
 			paddle.display("white");
 			
 			
@@ -169,9 +176,11 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 					if(!(ball.y - ball.r >= paddle.y + paddle.h))
 					{
 						ball.dy = ball.dy * (-1);
+						//dx increase depending on distance from paddle centre
+						ball.dx+=(ball.x - (paddle.w/2)) / (paddle.w)/2;
 					}
 				}
-				//Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of thw game window
+				//Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
 			}
 			
 			
@@ -209,12 +218,12 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	
 	////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////
-	/////	MOUSE LISTENER 
+	///	MOUSE LISTENER 
 	//////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////
 	
 	/////////////////
-	// Mouse Click
+	///Mouse Click
 	///////////////
 	canvas.addEventListener('click', function (evt){
 		
@@ -243,9 +252,12 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
       
 	///////////////////////////////////
 	//////////////////////////////////
-	////////	KEY BOARD INPUT
+	///	KEY BOARD INPUT
 	////////////////////////////////
 
+	//	keypress - triggers once when pressed and/or held down
+	//	keyup - triggers when key is realeased
+	//	keydown - keeps triggering while being pressed down
 	window.addEventListener('keydown', function(evt){
 		var key = evt.keyCode;
 		
