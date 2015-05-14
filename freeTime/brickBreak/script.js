@@ -28,23 +28,31 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		screenState = 0;
 		
 		bricks = [];
-		bricks[0] = new Brick(200, 100);
-		bricks[1] = new Brick(255, 100);
-		bricks[2] = new Brick(310, 100);
+		///Brick Layout Start
+		for(var i = 0; i < 3; i++){
+			bricks[i] = new Brick(240 + i*55, 100);
+		}
+		for(var i = 3; i < 7; i++){
+			bricks[i] = new Brick(215 + (i-3)*55, 125);
+		}
+		for(var i = 7; i < 10; i++){
+			bricks[i] = new Brick(240 + (i-7)*55, 150);
+		}
 		
+		///Brick Layout End
+
 		//Ball object
 		ball = {
 			x : w/2,
-			y : h*(3/4),
+			y : 440,//h*(3/4)
 			//Radius
 			r : 7, 
 			
 			//Velocity in 2 directions
-			dx : Math.floor(Math.random()*7)-3,
-			dy : -7		
+			dx : 0,
+			dy : 0		
 		};
 		
-		//Ball spherical display
 		ball.display = function(color){
 			this.color = color;
 			ctx.beginPath();
@@ -54,18 +62,16 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fill();
 		};
 		
-		//Sets the ball moving
 		ball.move = function(){
 			ball.x+=ball.dx;
 			ball.y+=ball.dy;
 		};
 		
-		//Ball-related actions are done here when the ball reaches the bottom of the stage
 		ball.resetPosition = function(){
 			ball.x = w/2;
-			ball.y = h*(3/4);
-			ball.dx = Math.floor(Math.random()*7)-3;
-			ball.dy = -7;
+			ball.y = 440;
+			ball.dx = 0;
+			ball.dy = 0;
 		};
 		
 		//Paddle object
@@ -75,7 +81,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			
 			//Starting position
 			x : w/2 - 50, //Perfectly centred horizontally
-			y : h*(15/16), //Near the bottom
+			y : 450, //Near the bottom
 			
 			s : 20 //speed limit
 		};
@@ -92,14 +98,14 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			this.y = y;
 			this.w = 50;
 			this.h = 20;
-		}
+		};
 		
 		//Brick static function
 		Brick.prototype.display = function(color){
 			this.color = color;
 			ctx.fillStyle = color;
 			ctx.fillRect(this.x, this.y, this.w, this.h);		
-		}
+		};
 
 	//////////
 	///STATE VARIABLES
@@ -153,45 +159,46 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillStyle = "#222222";
 			ctx.fillRect(0,0, w, h);	
 			
+			//Side Border Overlay
+			ctx.fillStyle = "#000000";
+			ctx.fillRect(0,0, 100, h);
+			ctx.fillRect(w-100, 0, 100, h);
+			
 			//Ball init
-			ball.display("#009900");
+			ball.display("#119911");
 			ball.move();
 			
 			//Paddle init
 			paddle.display("white");
 			
-			
-			/*
-				Somehow complex paddle collision detection
-			*/
-			//X Axis detection
+			///Paddle collision
+			//X Axis check
 			if(ball.x >= paddle.x + ball.r && ball.x <= (paddle.x +  paddle.w) - ball.r)
 			{
-				//Y Axis detection + ball direction
+				//Y Axis + ball direction check (checks if dy is positive, to be specific)
 				if(ball.y + ball.r >= paddle.y && ball.dy == Math.abs(ball.dy))
 				{
-					//Ball location (doesn't trigger if ball is below the paddle)
+					//Ball location check
 					//This makes only the top side of the paddle bounce the ball
-					//if the ball goes through the paddle, it simply passes through
+					//If the ball goes through the paddle, it simply passes through
 					if(!(ball.y - ball.r >= paddle.y + paddle.h))
 					{
 						ball.dy = ball.dy * (-1);
 						//dx increase depending on distance from paddle centre
-						ball.dx+=(ball.x - (paddle.w/2)) / (paddle.w)/2;
+						ball.dx+=Math.floor((ball.x - (paddle.w/2)) / (paddle.w)/2);
 					}
 				}
 				//Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
 			}
 			
-			
-			//Upper wall bounce
+			///Ball wall bounce
+			//Upper wall
 			if(ball.y < ball.r)
 			{
 				ball.dy = ball.dy*(-1);	
 			}
-			
-			//Side walls bounce
-			if(ball.x < ball.r || ball.x > w - ball.r)
+			//Side walls
+			if(ball.x < ball.r + 100 || ball.x > w - ball.r - 100)
 			{
 				ball.dx = ball.dx*(-1);	
 			}
@@ -200,20 +207,30 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			if(ball.y - ball.r > h)
 			{
 				ball.resetPosition();
-				//lives-=1;			
+				paddle.x = w/2 - 50;			
 			}
 			
-			//Speed limiter, so the slight speed increase won't go too far when it glitches
+			//Ball speed limiter, so the slight speed increase won't go too far
 			if(ball.dx > 7) ball.dx = 7;
 			if(ball.dx < -7) ball.dx = -7;
 			
-			
-			bricks[0].display("white");
-			bricks[1].display("red");
-			bricks[2].display("yellow");
-		}
-	
-		
+			//Brick display
+			for(var i = 0; i < bricks.length; i++){
+				bricks[i].display("#99FF99");
+			}
+
+			//Brick collision
+			for(var i = 0; i < bricks.length; i++){
+				//Top
+				
+				//Bottom
+				
+				//Left
+				
+				//Right
+				
+			}
+		}	
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
 	
 	////////////////////////////////////////////////////////
@@ -226,7 +243,6 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	///Mouse Click
 	///////////////
 	canvas.addEventListener('click', function (evt){
-		
 	      
 	}, false);
 
@@ -289,12 +305,16 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		
 		//WASD and arrow key both supported
 		if(screenState == 1){
+			if(ball.dx == 0 &&  ball.dy == 0 && (key == 37 || key == 65 || key == 39 || key == 68)){
+				ball.dx = Math.floor(Math.random()*7)-3;
+				ball.dy = -7;
+			}
 			if(key == 37 || key == 65){
-				if(paddle.x - paddle.s > 0){
+				if(paddle.x - paddle.s > 100){
 					paddle.x-=paddle.s;
 				}
 			} else if(key == 39 || key == 68){
-				if(paddle.x < w - paddle.w){
+				if(paddle.x + (paddle.w) < w - 100){
 					paddle.x+=paddle.s;
 				}
 			}
