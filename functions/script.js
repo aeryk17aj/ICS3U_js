@@ -8,8 +8,6 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var w = $("#canvas").width();
 	var h = $("#canvas").height();
 	var mx, my;
-	var ballx, bally;
-	var ballspeedx, ballspeedy;
 	
 	/////////////////////////////////
 	////////////////////////////////
@@ -20,11 +18,6 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	/////////////////////////////
 	function init()
 	{
-		ballx = [0];
-		bally = [0];
-		ballspeedx = [0];
-		ballspeedy = [0];
-		
 	//////////
 	///STATE VARIABLES
 	
@@ -55,15 +48,6 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		drawBody(50, 50);
 		drawBody(130, 50);
 		
-		ctx.fillStyle = "green";
-		
-
-		ctx.fillRect(ballx[0], bally[0], 20, 20);
-		ballx[0]+=ballspeedx[0];
-		bally[0]+=ballspeedy[0];
-		
-		addBall(100, 200, 3, 3);
-		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
 	
 	///1)
@@ -88,22 +72,18 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		return Math.floor(Math.random()*(par2 - par1)) + par1;
 	}
 	
-	///3)
-	function addBall(x, y, sx, sy){
-		ballx.push(x);
-		bally.push(y);
-		ballspeedx.push(sx);
-		ballspeedy.push(sy);
-	}
+	/*
+	3) Write a function that has parameters (yourName).  Have the function return true of false
+	based on if the name send in is the same as "Nicky Cage".  This function only returns a value
+	it does NOT use fillText, or alert, or prompt or anything like that.
+
+	Use you function with a prompt and alert up in the init section to get the program to ask for a name
+	and alert whether or not the user is good actor based on the results from the function you wrote.
+	*/
 	
-	///4)
-	function bounceBall(i){
-		if(mx >= ballx[i] && mx < ballx[i] + 20){
-			if(my >= bally[i] && my < bally[i] + 20){
-				ballspeedx[i]*=-1;
-				ballspeedy[i]*=-1;
-			}
-		}
+	///3)
+	function isGoodActor(yourName){
+		return yourName == "Nicky Cage";
 	}
 	
 	////////////////////////////////////////////////////////
