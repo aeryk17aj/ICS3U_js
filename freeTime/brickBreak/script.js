@@ -230,7 +230,42 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				//Right
 				
 			}
-		}	
+		}
+		
+		
+		////////
+		///NEXT LEVEL SCREEN
+		////////
+		if(screenState == 2){
+			//BG
+			ctx.fillStyle = "#222222";
+			ctx.fillRect(0,0, w, h);
+			
+			//Next Level text
+			
+			//Buttons for Next Level and back to Menu
+			
+			//Placeholder content
+			ctx.font = "13px Arial";
+			ctx.fillStyle = "#FFFFFF";
+			ctx.fillText("Next screen under construction.", 5, h-10);
+		}
+		
+		////////
+		///LEVEL SELECT SCREEN
+		////////
+		if(screenState == 3){
+			//BG
+			ctx.fillStyle = "#222222";
+			ctx.fillRect(0,0, w, h);
+			
+			//Placeholder content
+			ctx.font = "13px Arial";
+			ctx.fillStyle = "#FFFFFF";
+			ctx.fillText("Level select screen under construction.", 5, h-10);
+		}
+		
+		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
 	
 	////////////////////////////////////////////////////////
@@ -271,9 +306,6 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	///	KEY BOARD INPUT
 	////////////////////////////////
 
-	//	keypress - triggers once when pressed and/or held down
-	//	keyup - triggers when key is realeased
-	//	keydown - keeps triggering while being pressed down
 	window.addEventListener('keydown', function(evt){
 		var key = evt.keyCode;
 		
