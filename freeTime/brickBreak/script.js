@@ -74,6 +74,14 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ball.dy = 0;
 		};
 		
+		ball.bounceX = function(){
+			ball.dx = ball.dx * (-1);
+		};
+		
+		ball.bounceY = function(){
+			ball.dy = ball.dy * (-1);
+		}
+		
 		//Paddle object
 		paddle = {
 			h : 10,
@@ -92,6 +100,11 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillRect(this.x, this.y, this.w, this.h);	
 		};
 		
+		paddle.resetPosition = function(){
+			paddle.x = w/2 - 50;
+			//No need for Y reset if you can't move it vertically
+		}
+		
 		//Brick constructor
 		function Brick(x, y) {
 			this.x = x;
@@ -105,6 +118,18 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			this.color = color;
 			ctx.fillStyle = color;
 			ctx.fillRect(this.x, this.y, this.w, this.h);		
+		};
+		
+		function resetBricks(){
+			for(var i = 0; i < 3; i++){
+				bricks.push(new Brick(240 + i*55, 100));
+			}
+			for(var i = 0; i < 4; i++){
+				bricks.push(new Brick(215 + i*55, 125));
+			}
+			for(var i = 0; i < 3; i++){
+				bricks.push(new Brick(240 + i*55, 150));
+			}
 		};
 
 	//////////
@@ -183,7 +208,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 					//If the ball goes through the paddle, it simply passes through
 					if(!(ball.y - ball.r >= paddle.y + paddle.h))
 					{
-						ball.dy = ball.dy * (-1);
+						ball.bounceY();
 						//dx increase depending on distance from paddle centre
 						ball.dx+=Math.floor((ball.x - (paddle.w/2)) / (paddle.w)/2);
 					}
@@ -195,35 +220,46 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			//Upper wall
 			if(ball.y < ball.r)
 			{
-				ball.dy = ball.dy*(-1);	
+				ball.bounceY();	
 			}
 			//Side walls
 			if(ball.x < ball.r + 100 || ball.x > w - ball.r - 100)
 			{
-				ball.dx = ball.dx*(-1);	
+				ball.bounceX();
 			}
 			
 			//The bottom is a pit. The ball resets if it goes there
 			if(ball.y - ball.r > h)
 			{
 				ball.resetPosition();
-				paddle.x = w/2 - 50;			
+				paddle.resetPosition
+				resetBricks();			
 			}
 			
 			//Ball speed limiter, so the slight speed increase won't go too far
 			if(ball.dx > 7) ball.dx = 7;
 			if(ball.dx < -7) ball.dx = -7;
-			
+
 			//Brick display
 			for(var i = 0; i < bricks.length; i++){
 				bricks[i].display("#99FF99");
 			}
-
+			
 			//Brick collision
 			for(var i = 0; i < bricks.length; i++){
+				ctx.fillStyle = "#000000";
+				ctx.fillText("#" + i, bricks[i].x + bricks[i].w/2, bricks[i].y + bricks[i].h/2 + 5);
+				if(ball.x >= bricks[i].x && ball.x <= bricks[i].x + bricks[i].w){
 				//Top
 				
 				//Bottom
+					console.log("t1");
+					if(ball.y - ball.r <= bricks[i].y + bricks[i].h && ball.dy != Math.abs(ball.dy)){
+					console.log("t2");
+						bricks.splice(i, 1);
+						ball.bounceY();
+					}
+				}
 				
 				//Left
 				
