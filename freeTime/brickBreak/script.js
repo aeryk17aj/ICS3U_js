@@ -13,6 +13,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var paddle;
 	var ar;
 	var bricks;
+	var btnCols;
 	
 	
 	/////////////////////////////////
@@ -26,6 +27,11 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	{
 		ar = [33,34,35,36,38,40]; // array of keys not to move the webpage when pressed
 		screenState = 0;
+		
+		btnCols = [];
+		for(var i = 0; i < 3; i++){
+			btnCols.push("#777777");
+		}
 		
 		bricks = [];
 		///Brick Layout Start
@@ -166,13 +172,28 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		if(screenState == 0)
 		{
 			//BG
-			ctx.fillStyle = "#222222";
-			ctx.fillRect(0,0, w, h);
+			ctx.fillStyle = "#333333";
+			ctx.fillRect(0, 0, w, h);
 
-			//Placeholder content
+			///3 Buttons - [Play], [], [Options]
+			//Shadow
+			for(var i = 0; i < 3; i++){
+				ctx.fillStyle = btnCols[i] == "#999999" ? "#777777" : "#666666";
+				ctx.fillRect(17, h - 67 - (i*70), 200, 50);
+			}
+			//Front
+			for(var i = 0; i < 3; i++){
+				ctx.fillStyle = btnCols[i];
+				ctx.fillRect(20, h - 70 - (i*70), 200, 50);
+			}
+			
+			//Placeholder/Debug content
+			ctx.fillText(mx + ", " + my, 5, 15);
+			/*
 			ctx.font = "13px Arial";
 			ctx.fillStyle = "#FFFFFF";
 			ctx.fillText("Menu screen under construction. Press Enter to start the game.", 5, h-10);
+			*/
 		}
 		
 		////////
@@ -318,15 +339,28 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	}, false);
 
 	canvas.addEventListener ('mouseout', function(){pause = true;}, false);
-	canvas.addEventListener ('mouseover', function(){pause = false;}, false);
+	canvas.addEventListener ('mouseover', function(){
+		pause = false;
+		
+	}, false);
 
-      	canvas.addEventListener('mousemove', function(evt) {
-        	var mousePos = getMousePos(canvas, evt);
+	canvas.addEventListener('mousemove', function(evt) {
+		var mousePos = getMousePos(canvas, evt);
 
 		mx = mousePos.x;
 		my = mousePos.y;
+		
+		if(mx >= 20 && mx <= 220){
+			for(var i = 0; i < 3; i++){
+				if(my >= h - 70 - (i*70) && my <= h -  20 - (i*70)){
+					btnCols[i] = "#999999";
+				} else {
+					btnCols[i] = "#777777";
+				}
+			}
+		}
 
-      	}, false);
+	}, false);
 
 	function getMousePos(canvas, evt) 
 	{
