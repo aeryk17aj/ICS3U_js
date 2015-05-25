@@ -264,20 +264,26 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				ctx.fillStyle = "#000000";
 				ctx.fillText("#" + i, bricks[i].x + bricks[i].w/2 - 6, bricks[i].y + bricks[i].h/2 + 5);
 				
+				//If within x range
 				if(ball.x >= bricks[i].x && ball.x <= bricks[i].x + bricks[i].w){
-				//Top
-				
-				//Bottom
+					//Top - if the ball is right above the brick and is heading down
+					if(ball.y + ball.r >= bricks[i].y && ball.dy == Math.abs(ball.dy) && ball.dy != 0){
+						bricks.splice(i, 1);
+						ball.bounceY();
+					}
+					//Bottom - if the ball is right below the brick and is heading up
 					if(ball.y - ball.r <= bricks[i].y + bricks[i].h && ball.dy != Math.abs(ball.dy)){	
 						bricks.splice(i, 1);
 						ball.bounceY();
 					}
 				}
 				
-				//Left
-				
-				//Right
-				
+				//If within y range - BROKEN
+				if(ball.y >= bricks[i].y && ball.y <= bricks[i].y + bricks[i].h){
+				//Left - if the ball is on the left of the brick and is heading right
+					
+				//Right - if the ball is on the right of the brick and is heading left
+				}
 			}
 		}
 		
