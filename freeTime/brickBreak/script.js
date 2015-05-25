@@ -14,6 +14,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var ar;
 	var bricks;
 	var btnCols;
+	var levelsUnlocked;
 	
 	
 	/////////////////////////////////
@@ -32,6 +33,8 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		for(var i = 0; i < 3; i++){
 			btnCols.push("#777777");
 		}
+		
+		levelsUnlocked = 1;
 		
 		bricks = [];
 		///Brick Layout Start
@@ -111,14 +114,6 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			//No need for Y reset if you can't move it vertically
 		}
 		
-		//Brick constructor
-		function Brick(x, y) {
-			this.x = x;
-			this.y = y;
-			this.w = 50;
-			this.h = 20;
-		};
-		
 		//Brick static function
 		Brick.prototype.display = function(color){
 			this.color = color;
@@ -126,17 +121,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillRect(this.x, this.y, this.w, this.h);		
 		};
 		
-		function resetBricks(){
-			for(var i = 0; i < 3; i++){
-				bricks.push(new Brick(240 + i*55, 100));
-			}
-			for(var i = 0; i < 4; i++){
-				bricks.push(new Brick(215 + i*55, 125));
-			}
-			for(var i = 0; i < 3; i++){
-				bricks.push(new Brick(240 + i*55, 150));
-			}
-		};
+		
 
 	//////////
 	///STATE VARIABLES
@@ -186,6 +171,12 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				ctx.fillStyle = btnCols[i];
 				ctx.fillRect(20, h - 70 - (i*70), 200, 50);
 			}
+			//Text
+			ctx.font = "48px Calibri";
+			ctx.fillStyle = "#333333";
+			ctx.fillText("Play", 30, 308);
+			ctx.fillText("...", 30, 378);
+			ctx.fillText("Options", 30, 448);
 			
 			//Placeholder/Debug content
 			ctx.fillText(mx + ", " + my, 5, 15);
@@ -253,8 +244,8 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			if(ball.y - ball.r > h)
 			{
 				ball.resetPosition();
-				paddle.resetPosition
-				resetBricks();			
+				paddle.resetPosition();
+				resetBricks();		
 			}
 			
 			//Ball speed limiter, so the slight speed increase won't go too far
@@ -268,15 +259,16 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			
 			//Brick collision
 			for(var i = 0; i < bricks.length; i++){
+				//Debug
+				ctx.font = "14px Arial";
 				ctx.fillStyle = "#000000";
-				ctx.fillText("#" + i, bricks[i].x + bricks[i].w/2, bricks[i].y + bricks[i].h/2 + 5);
+				ctx.fillText("#" + i, bricks[i].x + bricks[i].w/2 - 6, bricks[i].y + bricks[i].h/2 + 5);
+				
 				if(ball.x >= bricks[i].x && ball.x <= bricks[i].x + bricks[i].w){
 				//Top
 				
 				//Bottom
-					console.log("t1");
-					if(ball.y - ball.r <= bricks[i].y + bricks[i].h && ball.dy != Math.abs(ball.dy)){
-					console.log("t2");
+					if(ball.y - ball.r <= bricks[i].y + bricks[i].h && ball.dy != Math.abs(ball.dy)){	
 						bricks.splice(i, 1);
 						ball.bounceY();
 					}
@@ -322,8 +314,37 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillText("Level select screen under construction.", 5, h-10);
 		}
 		
+		////////
+		///OPTIONS SCREEN
+		////////
+		if(screenState == 4){
+			//BG
+			ctx.fillStyle = "#222222";
+			ctx.fillRect(0,0, w, h);
+		}
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
+	
+	//Brick constructor
+	function Brick(x, y) {
+		this.x = x;
+		this.y = y;
+		this.w = 50;
+		this.h = 20;
+	};
+	
+	function resetBricks(){
+		bricks = [];
+		for(var i = 0; i < 3; i++){
+			bricks.push(new Brick(240 + i*55, 100));
+		}
+		for(var i = 0; i < 4; i++){
+			bricks.push(new Brick(215 + i*55, 125));
+		}
+		for(var i = 0; i < 3; i++){
+			bricks.push(new Brick(240 + i*55, 150));
+		}
+	};
 	
 	////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////
@@ -335,7 +356,17 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	///Mouse Click
 	///////////////
 	canvas.addEventListener('click', function (evt){
-	      
+		if(mx >= 20 && mx <= 220){
+			if(my >= h - 70 && my <= h - 20){
+				screenState = 3;
+			}
+			if(my >= h - 140 && my <= h - 90){
+			
+			}
+			if(my >= h - 210 && my <= h - 160){
+			
+			}
+		}
 	}, false);
 
 	canvas.addEventListener ('mouseout', function(){pause = true;}, false);
@@ -350,16 +381,17 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		mx = mousePos.x;
 		my = mousePos.y;
 		
-		if(mx >= 20 && mx <= 220){
-			for(var i = 0; i < 3; i++){
-				if(my >= h - 70 - (i*70) && my <= h -  20 - (i*70)){
+		for(var i = 0; i < 3; i++){
+			if(my >= h - ((i+1)*70) && my <= h -  20 - (i*70)){
+				if(mx >= 20 && mx <= 220){
 					btnCols[i] = "#999999";
 				} else {
 					btnCols[i] = "#777777";
 				}
+			} else {
+				btnCols[i] = "#777777";
 			}
 		}
-
 	}, false);
 
 	function getMousePos(canvas, evt) 
@@ -380,6 +412,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		var key = evt.keyCode;
 		
 		//Enter 13
+		//Esc 27
 		//37 Left
 		//39 Right
 		//1-9 49-57
@@ -397,11 +430,17 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			return false;	
 		}
 		
+		if(screenState != 0){
+			if(key == 27){
+				screenState = 0;
+			}
+		}
+		
 		if(screenState == 0)
 		{
 			if(key == 13)
 			{
-				screenState = 1;
+				screenState = levelsUnlocked > 1 ? 3 : 1;
 			}
 		}
 		
