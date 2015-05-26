@@ -258,12 +258,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			}
 			
 			//Brick collision
-			for(var i = 0; i < bricks.length; i++){
-				//Debug
-				ctx.font = "14px Arial";
-				ctx.fillStyle = "#000000";
-				ctx.fillText("#" + i, bricks[i].x + bricks[i].w/2 - 6, bricks[i].y + bricks[i].h/2 + 5);
-				
+			for(var i = 0; i < bricks.length; i++){				
 				//If within x range
 				if(ball.x >= bricks[i].x && ball.x <= bricks[i].x + bricks[i].w){
 					//Top side bounce check + ball direction check
