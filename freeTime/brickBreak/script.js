@@ -222,7 +222,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 					{
 						ball.bounceY();
 						//dx increase depending on distance from paddle centre
-						ball.dx+=Math.floor((ball.x - (paddle.w/2)) / (paddle.w)/2);
+						ball.dx+=Math.floor(Math.abs(ball.x - paddle.x - paddle.w/2)/(paddle.w/2));
 					}
 				}
 				//Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
@@ -266,23 +266,43 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				
 				//If within x range
 				if(ball.x >= bricks[i].x && ball.x <= bricks[i].x + bricks[i].w){
-					//Top - if the ball is right above the brick and is heading down
+					//Top side bounce check + ball direction check
 					if(ball.y + ball.r >= bricks[i].y && ball.dy == Math.abs(ball.dy) && ball.dy != 0){
-						bricks.splice(i, 1);
-						ball.bounceY();
-					}
-					//Bottom - if the ball is right below the brick and is heading up
-					if(ball.y - ball.r <= bricks[i].y + bricks[i].h && ball.dy != Math.abs(ball.dy)){	
-						bricks.splice(i, 1);
-						ball.bounceY();
+						//Checks if the ball is indeed on top of the brick
+						if(!(ball.y - ball.r >= bricks[i].y + bricks[i].h)){
+							ball.bounceY();
+							ball.dx+=Math.floor(Math.abs(ball.x - bricks[i].x - bricks[i].w/2)/(bricks[i].w/2));
+							bricks.splice(i, 1);
+						}
+					} 
+					//Bottom side bounce check + ball direction check
+					if(ball.y - ball.r <= bricks[i].y + bricks[i].h && ball.dy != Math.abs(ball.dy)){
+						//Checks if the ball is indeed on the bottom of the brick					
+						if(!(ball.y + ball.r <= bricks[i].y)){
+							ball.bounceY();
+							ball.dx+=Math.floor(Math.abs(ball.x - bricks[i].x - bricks[i].w/2)/(bricks[i].w/2));
+							bricks.splice(i, 1);
+						}
 					}
 				}
-				
-				//If within y range - BROKEN
+				//If within y range
 				if(ball.y >= bricks[i].y && ball.y <= bricks[i].y + bricks[i].h){
-				//Left - if the ball is on the left of the brick and is heading right
-					
-				//Right - if the ball is on the right of the brick and is heading left
+					//Left side bounce check + ball direction check
+					if(ball.x + ball.r >= bricks[i].x && ball.dx == Math.abs(ball.dx) && ball.dx != 0){
+						//Checks if the ball is indeed on the left of the brick	
+						if(!(ball.x - ball.r >= bricks[i].x + bricks[i].w)){
+							ball.bounceX();
+							bricks.splice(i, 1);
+						}
+					}
+					//Right side bounce check + ball direction check
+					if(ball.x - ball.r <= bricks[i].x + bricks[i].w && ball.dx != Math.abs(ball.dx)){
+						//Checks if the ball is indeed on the right of the brick	
+						if(!(ball.x + ball.r <= bricks[i].x)){
+							ball.bounceX();
+							bricks.splice(i, 1);
+						}
+					}
 				}
 			}
 		}
