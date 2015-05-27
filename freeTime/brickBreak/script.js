@@ -15,6 +15,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var bricks;
 	var btnCols;
 	var levelsUnlocked;
+	var skipNextLevel;
 	
 	
 	/////////////////////////////////
@@ -30,11 +31,12 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		screenState = 0;
 		
 		btnCols = [];
-		for(var i = 0; i < 3; i++){
+		for(var i = 0; i < 4; i++){
 			btnCols.push("#777777");
 		}
 		
 		levelsUnlocked = 1;
+		skipNextLevel = false;
 		
 		bricks = [];
 		///Brick Layout Start
@@ -342,6 +344,21 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			//BG
 			ctx.fillStyle = "#222222";
 			ctx.fillRect(0,0, w, h);
+			
+			//Shadow
+			for(var i = 0; i < 1; i++){
+				ctx.fillStyle = btnCols[i + 3] == "#999999" ? "#777777" : "#666666";
+				ctx.fillRect(17, (i*70) +17, 200, 25);
+			}
+			//Front
+			for(var i = 0; i < 1; i++){
+				ctx.fillStyle = btnCols[i + 3];
+				ctx.fillRect(20, (i*70) + 20, 200, 25);
+			}
+			//Button Text
+			ctx.font = "20px Calibri";
+			ctx.fillStyle = "#FFFFFF";
+			ctx.fillText("Skip Next Level: " + (skipNextLevel ? "ON" : "OFF"), 25, 38);
 		}
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
@@ -377,15 +394,30 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	///Mouse Click
 	///////////////
 	canvas.addEventListener('click', function (evt){
-		if(mx >= 20 && mx <= 220){
-			if(my >= h - 70 && my <= h - 20){
-				screenState = 3;
+		if(screenState == 0){
+			if(mx >= 20 && mx <= 220){
+				//Play
+				if(my >= h - 210 && my <= h - 160){
+					screenState = levelsUnlocked > 1 ? 3 : 1;
+				}
+				//...
+				if(my >= h - 140 && my <= h - 90){
+					
+				}
+				//Options
+				if(my >= h - 70 && my <= h - 20){
+					screenState = 4;
+				}
 			}
-			if(my >= h - 140 && my <= h - 90){
-			
-			}
-			if(my >= h - 210 && my <= h - 160){
-			
+		}
+		
+		if(screenState == 4){
+			if(my >= 20 && my <= 45){
+				if(mx >= 20 && mx <= 220){
+					//Skip Next Level Screen (Not fail state)
+					if(skipNextLevel) skipNextLevel = false;
+					else if(!skipNextLevel) skipNextLevel = true;
+				}
 			}
 		}
 	}, false);
@@ -402,15 +434,29 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		mx = mousePos.x;
 		my = mousePos.y;
 		
-		for(var i = 0; i < 3; i++){
-			if(my >= h - ((i+1)*70) && my <= h -  20 - (i*70)){
-				if(mx >= 20 && mx <= 220){
-					btnCols[i] = "#999999";
+		if(screenState == 0){
+			for(var i = 0; i < 3; i++){
+				if(my >= h - ((i+1)*70) && my <= h -  20 - (i*70)){
+					if(mx >= 20 && mx <= 220){
+						btnCols[i] = "#999999";
+					} else {
+						btnCols[i] = "#777777";
+					}
 				} else {
 					btnCols[i] = "#777777";
 				}
+			}
+		}
+		
+		if(screenState == 4){
+			if(my >= 20 && my <= 45){
+				if(mx >= 20 && mx <= 220){
+					btnCols[3] = "#999999";
+				} else {
+					btnCols[3] = "#777777";
+				}
 			} else {
-				btnCols[i] = "#777777";
+				btnCols[3] = "#777777"
 			}
 		}
 	}, false);
