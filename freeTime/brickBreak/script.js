@@ -16,6 +16,8 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var btnCols;
 	var levelsUnlocked;
 	var skipNextLevel;
+	var ss2State;
+	var levelBeaten;
 	
 	
 	/////////////////////////////////
@@ -29,9 +31,11 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	{
 		ar = [33,34,35,36,38,40]; // array of keys not to move the webpage when pressed
 		screenState = 0;
+		ss2State = 0; // 0 - Fail/Out of Lives | 1 - Success/Destroyed all bricks
+		levelBeaten = [0, 0];
 		
 		btnCols = [];
-		for(var i = 0; i < 4; i++){
+		for(var i = 0; i < 15; i++){
 			btnCols.push("#777777");
 		}
 		
@@ -247,13 +251,23 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			{
 				ball.resetPosition();
 				paddle.resetPosition();
-				resetBricks();		
+				//resetBricks();		
 			}
 			
 			//Ball speed limiter, so the slight speed increase won't go too far
 			if(ball.dx > 7) ball.dx = 7;
 			if(ball.dx < -7) ball.dx = -7;
-
+			
+			if(bricks.length == 0){
+				ss2State = 1;
+				screenState = 2;
+				
+				//(TODO) if this level hasn't been completed yet
+				if(!levelBeaten[0]) {
+					levelsUnlocked++; 
+				}
+			}
+			
 			//Brick display
 			for(var i = 0; i < bricks.length; i++){
 				bricks[i].display("#99FF99");
@@ -270,6 +284,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 							ball.bounceY();
 							ball.dx+=Math.floor(Math.abs(ball.x - bricks[i].x - bricks[i].w/2)/(bricks[i].w/2));
 							bricks.splice(i, 1);
+							break;
 						}
 					} 
 					//Bottom side bounce check + ball direction check
@@ -279,6 +294,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 							ball.bounceY();
 							ball.dx+=Math.floor(Math.abs(ball.x - bricks[i].x - bricks[i].w/2)/(bricks[i].w/2));
 							bricks.splice(i, 1);
+							break;
 						}
 					}
 				}
@@ -290,6 +306,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 						if(!(ball.x - ball.r >= bricks[i].x + bricks[i].w)){
 							ball.bounceX();
 							bricks.splice(i, 1);
+							break;
 						}
 					}
 					//Right side bounce check + ball direction check
@@ -298,6 +315,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 						if(!(ball.x + ball.r <= bricks[i].x)){
 							ball.bounceX();
 							bricks.splice(i, 1);
+							break;
 						}
 					}
 				}
@@ -306,21 +324,28 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		
 		
 		////////
-		///NEXT LEVEL SCREEN
+		///LEVEL FINISHED SCREEN
 		////////
 		if(screenState == 2){
 			//BG
 			ctx.fillStyle = "#222222";
 			ctx.fillRect(0,0, w, h);
 			
-			//Next Level text
-			
-			//Buttons for Next Level and back to Menu
-			
-			//Placeholder content
-			ctx.font = "13px Arial";
-			ctx.fillStyle = "#FFFFFF";
-			ctx.fillText("Next screen under construction.", 5, h-10);
+			if(ss2State == 0){
+				//Fail text
+				ctx.font = "40px Arial";
+				ctx.fillStyle = "#FF1111";
+				ctx.fillText("Level Failed", 10, 50);
+				
+				//Only button goes back to menu
+				
+			} else if(ss2State == 1){
+				//Next Level text
+				ctx.fillStyle = "#11FF11";
+				ctx.fillText("Level Finished", 10, 50);
+				//Buttons for Next Level and back to Menu
+				
+			}
 		}
 		
 		////////
@@ -330,6 +355,22 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			//BG
 			ctx.fillStyle = "#222222";
 			ctx.fillRect(0,0, w, h);
+			
+			//Shadow
+			for(var i = 0; i < 2; i++){
+				for(var j = 0; j < 5; j++){
+					ctx.fillStyle = btnCols[i*5 + j + 4] == "#999999" ? "#777777" : "#666666";
+					ctx.fillRect(47 + j*100, 53 + i*100, 70, 70);
+				}
+			}
+			
+			//Front
+			for(var i = 0; i < 2; i++){
+				for(var j = 0; j < 5; j++){
+					ctx.fillStyle = btnCols[i*5 + j + 4];
+					ctx.fillRect(50 + j*100, 50 + i*100, 70, 70);
+				}
+			}
 			
 			//Placeholder content
 			ctx.font = "13px Arial";
@@ -346,15 +387,13 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillRect(0,0, w, h);
 			
 			//Shadow
-			for(var i = 0; i < 1; i++){
-				ctx.fillStyle = btnCols[i + 3] == "#999999" ? "#777777" : "#666666";
-				ctx.fillRect(17, (i*70) +17, 200, 25);
-			}
+			ctx.fillStyle = btnCols[3] == "#999999" ? "#777777" : "#666666";
+			ctx.fillRect(17, (i*70) +17, 200, 25);
+			
 			//Front
-			for(var i = 0; i < 1; i++){
-				ctx.fillStyle = btnCols[i + 3];
-				ctx.fillRect(20, (i*70) + 20, 200, 25);
-			}
+			ctx.fillStyle = btnCols[3];
+			ctx.fillRect(20, (i*70) + 20, 200, 25);
+			
 			//Button Text
 			ctx.font = "20px Calibri";
 			ctx.fillStyle = "#FFFFFF";
@@ -448,6 +487,18 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			}
 		}
 		
+		if(screenState == 3){
+			for(var i = 0; i < 2; i++){
+				for(var j = 0; j < 5; j++){
+					if(my >= 50 + i*100 && my <= 120 + i*100){
+						if(mx >= 50 + i*100 && mx <= 120 + i*100){
+							btnCols[i*5 + j + 4] == "#999999";
+						}
+					}
+				}
+			}
+		}
+		
 		if(screenState == 4){
 			if(my >= 20 && my <= 45){
 				if(mx >= 20 && mx <= 220){
@@ -487,9 +538,13 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		//D 68
 		//P 80
 		//R 82
+		//+ 187
+		//- 189
 		
 		
 		//alert(key);
+		
+		if(key == 187) levelsUnlocked++;
 		
 		//prevents arrow scrolling (includes PgUp and PgDown)
 		if($.inArray(key, ar) > -1){
@@ -507,7 +562,9 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		{
 			if(key == 13)
 			{
-				screenState = levelsUnlocked > 1 ? 3 : 1;
+				//screenState = levelsUnlocked > 1 ? 3 : 1;
+				ss2State = 1;
+				screenState = 2;
 			}
 		}
 		
