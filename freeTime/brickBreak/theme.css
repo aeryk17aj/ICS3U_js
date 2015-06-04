@@ -6,7 +6,8 @@ margin:5px;
 
 #canvas
 {
-float:left
+cursor:none;
+float:left;
 margin-top:0px;
 }
 

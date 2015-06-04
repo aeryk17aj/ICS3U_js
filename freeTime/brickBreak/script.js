@@ -35,7 +35,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		levelBeaten = [0, 0];
 		
 		btnCols = [];
-		for(var i = 0; i < 15; i++){
+		for(var i = 0; i < 20; i++){
 			btnCols.push("#777777");
 		}
 		
@@ -112,7 +112,13 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		paddle.display = function(color){
 			this.color = color;
 			ctx.fillStyle = color;
-			ctx.fillRect(this.x, this.y, this.w, this.h);	
+			ctx.fillRect(this.x, this.y, this.w, this.h);
+			ctx.beginPath();
+			ctx.moveTo(this.x, this.y + this.h);
+			ctx.lineTo(this.x + this.w/2, this.y + this.h + 10);
+			ctx.lineTo(this.x + this.w, this.y + this.h);
+			ctx.closePath;
+			ctx.fill();
 		};
 		
 		paddle.resetPosition = function(){
@@ -177,6 +183,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				ctx.fillStyle = btnCols[i];
 				ctx.fillRect(20, h - 70 - (i*70), 200, 50);
 			}
+			
 			//Text
 			ctx.font = "48px Calibri";
 			ctx.fillStyle = "#333333";
@@ -184,13 +191,14 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillText("...", 30, 378);
 			ctx.fillText("Options", 30, 448);
 			
-			//Placeholder/Debug content
-			ctx.fillText(mx + ", " + my, 5, 15);
-			/*
-			ctx.font = "13px Arial";
+			//Cursor
 			ctx.fillStyle = "#FFFFFF";
-			ctx.fillText("Menu screen under construction. Press Enter to start the game.", 5, h-10);
-			*/
+			ctx.beginPath();
+			ctx.moveTo(mx, my);
+			ctx.lineTo(mx + 7, my + 9);
+			ctx.lineTo(mx, my + 14);
+			ctx.closePath();
+			ctx.fill();
 		}
 		
 		////////
@@ -213,6 +221,8 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			
 			//Paddle init
 			paddle.display("white");
+			paddle.x = mx - paddle.w/2;
+			
 			
 			///Paddle collision
 			//X Axis check
@@ -328,7 +338,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		////////
 		if(screenState == 2){
 			//BG
-			ctx.fillStyle = "#222222";
+			ctx.fillStyle = "#333333";
 			ctx.fillRect(0,0, w, h);
 			
 			if(ss2State == 0){
@@ -346,6 +356,15 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				//Buttons for Next Level and back to Menu
 				
 			}
+			
+			//Cursor
+			ctx.fillStyle = "#FFFFFF";
+			ctx.beginPath();
+			ctx.moveTo(mx, my);
+			ctx.lineTo(mx + 7, my + 9);
+			ctx.lineTo(mx, my + 14);
+			ctx.closePath();
+			ctx.fill();
 		}
 		
 		////////
@@ -353,7 +372,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		////////
 		if(screenState == 3){
 			//BG
-			ctx.fillStyle = "#222222";
+			ctx.fillStyle = "#333333";
 			ctx.fillRect(0,0, w, h);
 			
 			//Shadow
@@ -372,10 +391,14 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				}
 			}
 			
-			//Placeholder content
-			ctx.font = "13px Arial";
+			//Cursor
 			ctx.fillStyle = "#FFFFFF";
-			ctx.fillText("Level select screen under construction.", 5, h-10);
+			ctx.beginPath();
+			ctx.moveTo(mx, my);
+			ctx.lineTo(mx + 7, my + 9);
+			ctx.lineTo(mx, my + 14);
+			ctx.closePath();
+			ctx.fill();
 		}
 		
 		////////
@@ -383,21 +406,30 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		////////
 		if(screenState == 4){
 			//BG
-			ctx.fillStyle = "#222222";
+			ctx.fillStyle = "#333333";
 			ctx.fillRect(0,0, w, h);
 			
 			//Shadow
 			ctx.fillStyle = btnCols[3] == "#999999" ? "#777777" : "#666666";
-			ctx.fillRect(17, (i*70) +17, 200, 25);
+			ctx.fillRect(17, 23, 200, 25);
 			
 			//Front
 			ctx.fillStyle = btnCols[3];
-			ctx.fillRect(20, (i*70) + 20, 200, 25);
+			ctx.fillRect(20, 20, 200, 25);
 			
 			//Button Text
 			ctx.font = "20px Calibri";
 			ctx.fillStyle = "#FFFFFF";
 			ctx.fillText("Skip Next Level: " + (skipNextLevel ? "ON" : "OFF"), 25, 38);
+			
+			//Cursor
+			ctx.fillStyle = "#FFFFFF";
+			ctx.beginPath();
+			ctx.moveTo(mx, my);
+			ctx.lineTo(mx + 7, my + 9);
+			ctx.lineTo(mx, my + 14);
+			ctx.closePath();
+			ctx.fill();
 		}
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
@@ -450,6 +482,26 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			}
 		}
 		
+		if(screenState == 2){
+		
+		}
+		
+		if(screenState == 3){
+			for(var i = 0; i < 2; i++){
+				for(var j = 0; j < 5; j++){
+					if(my >= 50 + i*100 && my <= 120 + i*100){
+						if(mx >= 50 + i*100 && mx <= 120 + i*100){
+							//btnCols[i*5 + j + 4] = "#999999";
+						} else {
+							//btnCols[i*5 + j + 4] = "#777777";
+						}
+					} else {
+						//btnCols[i*5 + j + 4] = "#777777";
+					}
+				}
+			}
+		}
+		
 		if(screenState == 4){
 			if(my >= 20 && my <= 45){
 				if(mx >= 20 && mx <= 220){
@@ -492,8 +544,12 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				for(var j = 0; j < 5; j++){
 					if(my >= 50 + i*100 && my <= 120 + i*100){
 						if(mx >= 50 + i*100 && mx <= 120 + i*100){
-							btnCols[i*5 + j + 4] == "#999999";
+							btnCols[i*5 + j + 4] = "#999999";
+						} else {
+							btnCols[i*5 + j + 4] = "#777777";
 						}
+					} else {
+						btnCols[i*5 + j + 4] = "#777777";
 					}
 				}
 			}
@@ -531,6 +587,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		
 		//Enter 13
 		//Esc 27
+		//Space 32
 		//37 Left
 		//39 Right
 		//1-9 49-57
@@ -541,10 +598,10 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		//+ 187
 		//- 189
 		
-		
 		//alert(key);
 		
 		if(key == 187) levelsUnlocked++;
+		if(key == 189) levelsUnlocked--;
 		
 		//prevents arrow scrolling (includes PgUp and PgDown)
 		if($.inArray(key, ar) > -1){
@@ -569,7 +626,13 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		}
 		
 		//WASD and arrow key both supported
+		
 		if(screenState == 1){
+			if(key == 32) {
+				ball.dx = Math.floor(Math.random()*7)-3;
+				ball.dy = -7;
+			}
+			/*
 			if(ball.dx == 0 &&  ball.dy == 0 && (key == 37 || key == 65 || key == 39 || key == 68)){
 				ball.dx = Math.floor(Math.random()*7)-3;
 				ball.dy = -7;
@@ -583,6 +646,8 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 					paddle.x+=paddle.s;
 				}
 			}
+			*/
 		}
+		
 	}, false);
 })
