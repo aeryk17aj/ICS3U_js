@@ -34,8 +34,17 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		ss2State = 0; // 0 - Fail/Out of Lives | 1 - Success/Destroyed all bricks
 		levelBeaten = [0, 0];
 		
+		
+		/*
+		Button colour indexes used in each screen
+		
+		0-2  Menu
+		3-4  Level Finished
+		5-14 Level Select
+		15   Options
+		*/
 		btnCols = [];
-		for(var i = 0; i < 20; i++){
+		for(var i = 0; i < 16; i++){
 			btnCols.push("#777777");
 		}
 		
@@ -357,6 +366,17 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				
 			}
 			
+			//Shadow
+			for(var i = 0; i < 2; i++){
+				ctx.fillStyle = btnCols[i + 3] == "#999999" ? "#777777" : "#666666";
+				ctx.fillRect(17 + (i*220), h - 67, 200, 50);
+			}
+			//Front
+			for(var i = 0; i < 2; i++){
+				ctx.fillStyle = btnCols[i + 3];
+				ctx.fillRect(20 + (i*220), h - 70, 200, 50);
+			}
+			
 			//Cursor
 			ctx.fillStyle = "#FFFFFF";
 			ctx.beginPath();
@@ -378,7 +398,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			//Shadow
 			for(var i = 0; i < 2; i++){
 				for(var j = 0; j < 5; j++){
-					ctx.fillStyle = btnCols[i*5 + j + 4] == "#999999" ? "#777777" : "#666666";
+					ctx.fillStyle = btnCols[i*5 + j + 5] == "#999999" ? "#777777" : "#666666";
 					ctx.fillRect(47 + j*100, 53 + i*100, 70, 70);
 				}
 			}
@@ -386,8 +406,16 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			//Front
 			for(var i = 0; i < 2; i++){
 				for(var j = 0; j < 5; j++){
-					ctx.fillStyle = btnCols[i*5 + j + 4];
+					ctx.fillStyle = btnCols[i*5 + j + 5];
 					ctx.fillRect(50 + j*100, 50 + i*100, 70, 70);
+					
+					//Level Number Display
+					ctx.fillStyle = "#FFFFFF";
+					ctx.fillText(
+						i*5 + j + 1, 
+						70 + j*100  - ((i*5 + j + 1).toString().length > 1 ? ((i*5 + j + 1).toString().length - 1) * 10 : 0), 
+						100 + i*100
+					);
 				}
 			}
 			
@@ -410,11 +438,11 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillRect(0,0, w, h);
 			
 			//Shadow
-			ctx.fillStyle = btnCols[3] == "#999999" ? "#777777" : "#666666";
+			ctx.fillStyle = btnCols[15] == "#999999" ? "#777777" : "#666666";
 			ctx.fillRect(17, 23, 200, 25);
 			
 			//Front
-			ctx.fillStyle = btnCols[3];
+			ctx.fillStyle = btnCols[16];
 			ctx.fillRect(20, 20, 200, 25);
 			
 			//Button Text
@@ -444,6 +472,8 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	
 	function resetBricks(){
 		bricks = [];
+		
+		//Level 1
 		for(var i = 0; i < 3; i++){
 			bricks.push(new Brick(240 + i*55, 100));
 		}
@@ -469,6 +499,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			if(mx >= 20 && mx <= 220){
 				//Play
 				if(my >= h - 210 && my <= h - 160){
+					//Goes to first level if no other levels are unlocked
 					screenState = levelsUnlocked > 1 ? 3 : 1;
 				}
 				//...
@@ -483,7 +514,13 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		}
 		
 		if(screenState == 2){
-		
+			for(var i = 0; i < 2; i++){
+				if(my >= h - 70 && my <= h - 20){
+					if(mx >= 20 + (i*220) && mx <= (i+1)*220){
+						
+					}
+				}
+			}
 		}
 		
 		if(screenState == 3){
@@ -491,12 +528,12 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				for(var j = 0; j < 5; j++){
 					if(my >= 50 + i*100 && my <= 120 + i*100){
 						if(mx >= 50 + i*100 && mx <= 120 + i*100){
-							//btnCols[i*5 + j + 4] = "#999999";
+							
 						} else {
-							//btnCols[i*5 + j + 4] = "#777777";
+							
 						}
 					} else {
-						//btnCols[i*5 + j + 4] = "#777777";
+						
 					}
 				}
 			}
@@ -525,46 +562,50 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		mx = mousePos.x;
 		my = mousePos.y;
 		
+		///Button colour change through mouseover (technically mousemove)
+		
+		//Menu
 		if(screenState == 0){
 			for(var i = 0; i < 3; i++){
 				if(my >= h - ((i+1)*70) && my <= h -  20 - (i*70)){
 					if(mx >= 20 && mx <= 220){
 						btnCols[i] = "#999999";
-					} else {
-						btnCols[i] = "#777777";
-					}
-				} else {
-					btnCols[i] = "#777777";
-				}
+					} else btnCols[i] = "#777777";					
+				} else btnCols[i] = "#777777";				
 			}
 		}
 		
+		//Level Finished
+		if(screenState == 2){
+			for(var i = 0; i < 2; i++){
+				if(my >= h - 70 && my <= h - 20){
+					if(mx >= 20 + (i*220) && mx <= (i+1)*220){
+						btnCols[i + 3] = "#999999";
+					} else btnCols[i] = "#777777";					
+				} else btnCols[i] = "#777777";				
+			}
+		}
+		
+		//Level Select
 		if(screenState == 3){
 			for(var i = 0; i < 2; i++){
 				for(var j = 0; j < 5; j++){
-					if(my >= 50 + i*100 && my <= 120 + i*100){
-						if(mx >= 50 + i*100 && mx <= 120 + i*100){
-							btnCols[i*5 + j + 4] = "#999999";
-						} else {
-							btnCols[i*5 + j + 4] = "#777777";
-						}
-					} else {
-						btnCols[i*5 + j + 4] = "#777777";
-					}
+					if(my >= 50 + (i*100) && my <= 120 + (i*100)){
+						if(mx >= 50 + (j*100) && mx <= 120 + (j*100)){
+							btnCols[i*5 + j + 5] = "#999999";
+						} else btnCols[i*5 + j + 5] = "#777777";						
+					} else btnCols[i*5 + j + 5] = "#777777";					
 				}
 			}
 		}
 		
+		//Options
 		if(screenState == 4){
 			if(my >= 20 && my <= 45){
 				if(mx >= 20 && mx <= 220){
-					btnCols[3] = "#999999";
-				} else {
-					btnCols[3] = "#777777";
-				}
-			} else {
-				btnCols[3] = "#777777"
-			}
+					btnCols[15] = "#999999";
+				} else btnCols[15] = "#777777";				
+			} else btnCols[15] = "#777777"			
 		}
 	}, false);
 
@@ -586,17 +627,19 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		var key = evt.keyCode;
 		
 		//Enter 13
+		//Shift 16
+		//Ctrl 17
+		//Alt 18
 		//Esc 27
 		//Space 32
 		//37 Left
+		//38 Up
 		//39 Right
-		//1-9 49-57
-		//A 65
-		//D 68
-		//P 80
-		//R 82
-		//+ 187
-		//- 189
+		//40 Down
+		//48-57 0-9 
+		//65-90 A-Z
+		//+= 187
+		//-_ 189
 		
 		//alert(key);
 		
@@ -615,11 +658,11 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			}
 		}
 		
+		//Quick short cut
 		if(screenState == 0)
 		{
 			if(key == 13)
 			{
-				//screenState = levelsUnlocked > 1 ? 3 : 1;
 				ss2State = 1;
 				screenState = 2;
 			}
@@ -632,21 +675,6 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				ball.dx = Math.floor(Math.random()*7)-3;
 				ball.dy = -7;
 			}
-			/*
-			if(ball.dx == 0 &&  ball.dy == 0 && (key == 37 || key == 65 || key == 39 || key == 68)){
-				ball.dx = Math.floor(Math.random()*7)-3;
-				ball.dy = -7;
-			}
-			if(key == 37 || key == 65){
-				if(paddle.x - paddle.s > 100){
-					paddle.x-=paddle.s;
-				}
-			} else if(key == 39 || key == 68){
-				if(paddle.x + (paddle.w) < w - 100){
-					paddle.x+=paddle.s;
-				}
-			}
-			*/
 		}
 		
 	}, false);
