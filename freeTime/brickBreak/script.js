@@ -1,7 +1,55 @@
 $(document).ready(function(){
 	
-document.body.onmousedown = function() { return false; } //so page is unselectable
-
+	document.body.onmousedown = function() { return false; }; //so page is unselectable
+	
+	//Large XML String made readable by string concatenation
+	var xml = "" + 
+	"<level id='l1'>" + 
+		"<brick id='b1'>" + 
+			"<x>240</x>" + 
+			"<y>100</y>" + 
+			"<hits>1</hits>" + 
+		"</brick>" + 
+		"<brick id='b2'>" + 
+			"<x>295</x>" + 
+			"<y>100</y>" + 
+			"<hits>1</hits>" + 
+		"</brick>" + 
+	"</level>" +
+	"<level id='l2'>" + 
+		"<brick id='b1'>" + 
+			"<x>185</x>" + 
+			"<y>100</y>" + 
+			"<hits>1</hits>" + 
+		"</brick>" + 
+		"<brick id='b2'>" + 
+			"<x>240</x>" + 
+			"<y>100</y>" + 
+			"<hits>1</hits>" + 
+		"</brick>" + 
+	"</level>";
+	
+	var xmlDoc = $.parseXML(xml);
+	var $xml = $(xmlDoc);
+	$($xml).each(function(){
+		generatelevel.push(function(){
+			//Empties current brick array
+			bricks = [];
+			//For each number of bricks
+			//push a new brick objects with specified coords from the xml
+			//bricks.push(new Brick(240,100));
+			for(var i = 0; i < $(this).find('level').length; i++){
+				bricks.push(
+					new Brick(
+						parseInt($(this).find('brick[id=b"' + (i + 1).toString() + '"] > x').text()), 
+						parseInt($(this).find('brick[id=b"' + (i + 1).toString() + '"] > y').text())
+						//parseInt($(this).find('brick[id=b"' + (i + 1).toString() + '"] > hits').text())
+					)
+				);				
+			}
+		});	
+	});
+		
 	//Canvas stuff
 	var canvas = $("#canvas")[0];
 	var ctx = canvas.getContext("2d");
@@ -18,6 +66,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	var skipNextLevel;
 	var ss2State;
 	var levelBeaten;
+	var generateLevel;
 	
 	
 	/////////////////////////////////
@@ -34,6 +83,35 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		ss2State = 0; // 0 - Fail/Out of Lives | 1 - Success/Destroyed all bricks
 		levelBeaten = [0, 0];
 		
+		
+		
+		generateLevel = [
+			function(){
+				//NO OP; No Level 0
+			},
+			function(){
+
+			},
+			function(){
+				
+			},
+			function(){
+				
+			},
+			
+		];
+		
+		/*
+			function(xml){
+				$(xml).find('levels').each(function(){
+					$(this).find('level').each(function(){
+						$(this).find('brick').each(function(){
+							
+						});
+					});
+				});
+			}
+		*/
 		
 		/*
 		Button colour indexes used in each screen
@@ -126,7 +204,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.moveTo(this.x, this.y + this.h);
 			ctx.lineTo(this.x + this.w/2, this.y + this.h + 10);
 			ctx.lineTo(this.x + this.w, this.y + this.h);
-			ctx.closePath;
+			ctx.closePath();
 			ctx.fill();
 		};
 		
@@ -175,7 +253,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		///MENU SCREEN
 		////////
 
-		if(screenState == 0)
+		if(screenState === 0)
 		{
 			//BG
 			ctx.fillStyle = "#333333";
@@ -277,9 +355,13 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			if(ball.dx > 7) ball.dx = 7;
 			if(ball.dx < -7) ball.dx = -7;
 			
-			if(bricks.length == 0){
-				ss2State = 1;
-				screenState = 2;
+			if(bricks.length === 0){
+				if(!skipNextLevel){
+					ss2State = 1;
+					screenState = 2;
+				} else {
+					//(TODO) Go to next level
+				}
 				
 				//(TODO) if this level hasn't been completed yet
 				if(!levelBeaten[0]) {
@@ -297,7 +379,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 				//If within x range
 				if(ball.x >= bricks[i].x && ball.x <= bricks[i].x + bricks[i].w){
 					//Top side bounce check + ball direction check
-					if(ball.y + ball.r >= bricks[i].y && ball.dy == Math.abs(ball.dy) && ball.dy != 0){
+					if(ball.y + ball.r >= bricks[i].y && ball.dy == Math.abs(ball.dy) && ball.dy !== 0){
 						//Checks if the ball is indeed on top of the brick
 						if(!(ball.y - ball.r >= bricks[i].y + bricks[i].h)){
 							ball.bounceY();
@@ -350,7 +432,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			ctx.fillStyle = "#333333";
 			ctx.fillRect(0,0, w, h);
 			
-			if(ss2State == 0){
+			if(ss2State === 0){
 				//Fail text
 				ctx.font = "40px Arial";
 				ctx.fillStyle = "#FF1111";
@@ -468,7 +550,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		this.y = y;
 		this.w = 50;
 		this.h = 20;
-	};
+	}
 	
 	function resetBricks(){
 		bricks = [];
@@ -495,7 +577,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 	///Mouse Click
 	///////////////
 	canvas.addEventListener('click', function (evt){
-		if(screenState == 0){
+		if(screenState === 0){
 			if(mx >= 20 && mx <= 220){
 				//Play
 				if(my >= h - 210 && my <= h - 160){
@@ -565,7 +647,7 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		///Button colour change through mouseover (technically mousemove)
 		
 		//Menu
-		if(screenState == 0){
+		if(screenState === 0){
 			for(var i = 0; i < 3; i++){
 				if(my >= h - ((i+1)*70) && my <= h -  20 - (i*70)){
 					if(mx >= 20 && mx <= 220){
@@ -652,19 +734,20 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 			return false;	
 		}
 		
-		if(screenState != 0){
+		if(screenState !== 0){
 			if(key == 27){
 				screenState = 0;
 			}
 		}
 		
 		//Quick short cut
-		if(screenState == 0)
+		if(screenState === 0)
 		{
 			if(key == 13)
 			{
-				ss2State = 1;
-				screenState = 2;
+				//ss2State = 1;
+				//screenState = 2;
+				
 			}
 		}
 		
@@ -678,4 +761,4 @@ document.body.onmousedown = function() { return false; } //so page is unselectab
 		}
 		
 	}, false);
-})
+});
