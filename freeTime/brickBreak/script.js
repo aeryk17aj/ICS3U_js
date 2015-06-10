@@ -2,6 +2,7 @@ $(document).ready(function(){
 	
 	document.body.onmousedown = function() { return false; }; //so page is unselectable
 	
+	/*
 	//Large XML String made readable by string concatenation
 	var xml = "" + 
 	"<level id='l1'>" + 
@@ -49,7 +50,8 @@ $(document).ready(function(){
 			}
 		});	
 	});
-		
+	*/
+
 	//Canvas stuff
 	var canvas = $("#canvas")[0];
 	var ctx = canvas.getContext("2d");
@@ -137,7 +139,7 @@ $(document).ready(function(){
 		for(var ib2 = 3; ib2 < 7; ib2++){
 			bricks[ib2] = new Brick(215 + (ib2-3)*55, 125);
 		}
-		for(var ib3 = 7; i < 10; ib3++){
+		for(var ib3 = 7; ib3 < 10; ib3++){
 			bricks[ib3] = new Brick(240 + (ib3-7)*55, 150);
 		}
 		
@@ -182,7 +184,7 @@ $(document).ready(function(){
 		
 		ball.bounceY = function(){
 			ball.dy = ball.dy * (-1);
-		}
+		};
 		
 		//Paddle object
 		paddle = {
@@ -211,7 +213,7 @@ $(document).ready(function(){
 		paddle.resetPosition = function(){
 			paddle.x = w/2 - 50;
 			//No need for Y reset if you can't move it vertically
-		}
+		};
 		
 		//Brick static function
 		Brick.prototype.display = function(color){
@@ -758,7 +760,7 @@ $(document).ready(function(){
 		
 		if(screenState == 1){
 			//Space to launch ball
-			if(key == 32) {
+			if(key == 32 && ball.dx === 0 && ball.dy === 0) {
 				ball.dx = Math.floor(Math.random()*7)-3;
 				ball.dy = -7;
 			}
