@@ -122,7 +122,7 @@ $(document).ready(function(){
 		15   Options
 		*/
 		btnCols = [];
-		for(var i = 0; i < 16; i++){
+		for(var ibc = 0; ibc < 16; ibc++){
 			btnCols.push("#777777");
 		}
 		
@@ -131,14 +131,14 @@ $(document).ready(function(){
 		
 		bricks = [];
 		///Brick Layout Start
-		for(var i = 0; i < 3; i++){
-			bricks[i] = new Brick(240 + i*55, 100);
+		for(var ib1 = 0; ib1 < 3; ib1++){
+			bricks[ib1] = new Brick(240 + ib1*55, 100);
 		}
-		for(var i = 3; i < 7; i++){
-			bricks[i] = new Brick(215 + (i-3)*55, 125);
+		for(var ib2 = 3; ib2 < 7; ib2++){
+			bricks[ib2] = new Brick(215 + (ib2-3)*55, 125);
 		}
-		for(var i = 7; i < 10; i++){
-			bricks[i] = new Brick(240 + (i-7)*55, 150);
+		for(var ib3 = 7; i < 10; ib3++){
+			bricks[ib3] = new Brick(240 + (ib3-7)*55, 150);
 		}
 		
 		///Brick Layout End
@@ -256,19 +256,18 @@ $(document).ready(function(){
 		if(screenState === 0)
 		{
 			//BG
-			ctx.fillStyle = "#333333";
-			ctx.fillRect(0, 0, w, h);
+			setBackground("#333333");
 
 			///3 Buttons - [Play], [], [Options]
 			//Shadow
-			for(var i = 0; i < 3; i++){
-				ctx.fillStyle = btnCols[i] == "#999999" ? "#777777" : "#666666";
-				ctx.fillRect(17, h - 67 - (i*70), 200, 50);
+			for(var iSh = 0; iSh < 3; iSh++){
+				ctx.fillStyle = btnCols[iSh] == "#999999" ? "#777777" : "#666666";
+				ctx.fillRect(17, h - 67 - (iSh*70), 200, 50);
 			}
 			//Front
-			for(var i = 0; i < 3; i++){
-				ctx.fillStyle = btnCols[i];
-				ctx.fillRect(20, h - 70 - (i*70), 200, 50);
+			for(var iFr = 0; iFr < 3; iFr++){
+				ctx.fillStyle = btnCols[iFr];
+				ctx.fillRect(20, h - 70 - (iFr*70), 200, 50);
 			}
 			
 			//Text
@@ -294,8 +293,7 @@ $(document).ready(function(){
 		if(screenState == 1) 
 		{
 			//BG
-			ctx.fillStyle = "#222222";
-			ctx.fillRect(0,0, w, h);	
+			setBackground("#222222");	
 			
 			//Side Border Overlay
 			ctx.fillStyle = "#000000";
@@ -370,50 +368,50 @@ $(document).ready(function(){
 			}
 			
 			//Brick display
-			for(var i = 0; i < bricks.length; i++){
-				bricks[i].display("#99FF99");
+			for(var ibd = 0; ibd < bricks.length; ibd++){
+				bricks[ibd].display("#99FF99");
 			}
 			
 			//Brick collision
-			for(var i = 0; i < bricks.length; i++){				
+			for(var iCol = 0; iCol < bricks.length; iCol++){				
 				//If within x range
-				if(ball.x >= bricks[i].x && ball.x <= bricks[i].x + bricks[i].w){
+				if(ball.x >= bricks[iCol].x && ball.x <= bricks[iCol].x + bricks[iCol].w){
 					//Top side bounce check + ball direction check
-					if(ball.y + ball.r >= bricks[i].y && ball.dy == Math.abs(ball.dy) && ball.dy !== 0){
+					if(ball.y + ball.r >= bricks[iCol].y && ball.dy == Math.abs(ball.dy) && ball.dy !== 0){
 						//Checks if the ball is indeed on top of the brick
-						if(!(ball.y - ball.r >= bricks[i].y + bricks[i].h)){
+						if(!(ball.y - ball.r >= bricks[iCol].y + bricks[iCol].h)){
 							ball.bounceY();
-							ball.dx+=Math.floor(Math.abs(ball.x - bricks[i].x - bricks[i].w/2)/(bricks[i].w/2));
-							bricks.splice(i, 1);
+							ball.dx+=Math.floor(Math.abs(ball.x - bricks[iCol].x - bricks[iCol].w/2)/(bricks[iCol].w/2));
+							bricks.splice(iCol, 1);
 							break;
 						}
 					} 
 					//Bottom side bounce check + ball direction check
-					if(ball.y - ball.r <= bricks[i].y + bricks[i].h && ball.dy != Math.abs(ball.dy)){
+					if(ball.y - ball.r <= bricks[iCol].y + bricks[iCol].h && ball.dy != Math.abs(ball.dy)){
 						//Checks if the ball is indeed on the bottom of the brick					
-						if(!(ball.y + ball.r <= bricks[i].y)){
+						if(!(ball.y + ball.r <= bricks[iCol].y)){
 							ball.bounceY();
-							ball.dx+=Math.floor(Math.abs(ball.x - bricks[i].x - bricks[i].w/2)/(bricks[i].w/2));
-							bricks.splice(i, 1);
+							ball.dx+=Math.floor(Math.abs(ball.x - bricks[iCol].x - bricks[iCol].w/2)/(bricks[iCol].w/2));
+							bricks.splice(iCol, 1);
 							break;
 						}
 					}
 				}
 				//If within y range
-				if(ball.y >= bricks[i].y && ball.y <= bricks[i].y + bricks[i].h){
+				if(ball.y >= bricks[iCol].y && ball.y <= bricks[iCol].y + bricks[iCol].h){
 					//Left side bounce check + ball direction check
-					if(ball.x + ball.r >= bricks[i].x && ball.dx == Math.abs(ball.dx) && ball.dx != 0){
+					if(ball.x + ball.r >= bricks[iCol].x && ball.dx == Math.abs(ball.dx) && ball.dx != 0){
 						//Checks if the ball is indeed on the left of the brick	
-						if(!(ball.x - ball.r >= bricks[i].x + bricks[i].w)){
+						if(!(ball.x - ball.r >= bricks[iCol].x + bricks[iCol].w)){
 							ball.bounceX();
 							bricks.splice(i, 1);
 							break;
 						}
 					}
 					//Right side bounce check + ball direction check
-					if(ball.x - ball.r <= bricks[i].x + bricks[i].w && ball.dx != Math.abs(ball.dx)){
+					if(ball.x - ball.r <= bricks[iCol].x + bricks[iCol].w && ball.dx != Math.abs(ball.dx)){
 						//Checks if the ball is indeed on the right of the brick	
-						if(!(ball.x + ball.r <= bricks[i].x)){
+						if(!(ball.x + ball.r <= bricks[iCol].x)){
 							ball.bounceX();
 							bricks.splice(i, 1);
 							break;
@@ -429,8 +427,7 @@ $(document).ready(function(){
 		////////
 		if(screenState == 2){
 			//BG
-			ctx.fillStyle = "#333333";
-			ctx.fillRect(0,0, w, h);
+			setBackground("#333333");
 			
 			if(ss2State === 0){
 				//Fail text
@@ -474,8 +471,7 @@ $(document).ready(function(){
 		////////
 		if(screenState == 3){
 			//BG
-			ctx.fillStyle = "#333333";
-			ctx.fillRect(0,0, w, h);
+			setBackground("#333333");
 			
 			//Shadow
 			for(var i = 0; i < 2; i++){
@@ -516,8 +512,7 @@ $(document).ready(function(){
 		////////
 		if(screenState == 4){
 			//BG
-			ctx.fillStyle = "#333333";
-			ctx.fillRect(0,0, w, h);
+			setBackground("#333333");
 			
 			//Shadow
 			ctx.fillStyle = btnCols[15] == "#999999" ? "#777777" : "#666666";
@@ -543,6 +538,11 @@ $(document).ready(function(){
 		}
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
+	
+	function setBackground(color){
+		ctx.fillStyle = color;
+		ctx.fillRect(0,0, w, h);
+	}
 	
 	//Brick constructor
 	function Brick(x, y) {
@@ -576,7 +576,9 @@ $(document).ready(function(){
 	/////////////////
 	///Mouse Click
 	///////////////
-	canvas.addEventListener('click', function (evt){
+	canvas.addEventListener('click', function (evt)
+	{
+		//Menu
 		if(screenState === 0){
 			if(mx >= 20 && mx <= 220){
 				//Play
@@ -595,6 +597,8 @@ $(document).ready(function(){
 			}
 		}
 		
+		/*
+		//Level Finished
 		if(screenState == 2){
 			for(var i = 0; i < 2; i++){
 				if(my >= h - 70 && my <= h - 20){
@@ -605,22 +609,22 @@ $(document).ready(function(){
 			}
 		}
 		
+		//Level Select
 		if(screenState == 3){
 			for(var i = 0; i < 2; i++){
 				for(var j = 0; j < 5; j++){
 					if(my >= 50 + i*100 && my <= 120 + i*100){
 						if(mx >= 50 + i*100 && mx <= 120 + i*100){
-							
-						} else {
-							
-						}
-					} else {
-						
-					}
+							screenState = 1;
+							//setLevel((i*5) + j + 1);
+						} 
+					} 
 				}
 			}
 		}
+		*/
 		
+		//Options
 		if(screenState == 4){
 			if(my >= 20 && my <= 45){
 				if(mx >= 20 && mx <= 220){
@@ -633,10 +637,7 @@ $(document).ready(function(){
 	}, false);
 
 	canvas.addEventListener ('mouseout', function(){pause = true;}, false);
-	canvas.addEventListener ('mouseover', function(){
-		pause = false;
-		
-	}, false);
+	canvas.addEventListener ('mouseover', function(){pause = false;}, false);
 
 	canvas.addEventListener('mousemove', function(evt) {
 		var mousePos = getMousePos(canvas, evt);
@@ -705,28 +706,27 @@ $(document).ready(function(){
 	///	KEY BOARD INPUT
 	////////////////////////////////
 
+	/*
+	Enter 13
+	Shift 16
+	Ctrl 17
+	Alt 18
+	Esc 27
+	Space 32
+	37 Left
+	38 Up
+	39 Right
+	40 Down
+	48-57 0-9 
+	65-90 A-Z
+	+= 187
+	-_ 189
+	*/
+	
 	window.addEventListener('keydown', function(evt){
 		var key = evt.keyCode;
 		
-		//Enter 13
-		//Shift 16
-		//Ctrl 17
-		//Alt 18
-		//Esc 27
-		//Space 32
-		//37 Left
-		//38 Up
-		//39 Right
-		//40 Down
-		//48-57 0-9 
-		//65-90 A-Z
-		//+= 187
-		//-_ 189
-		
 		//alert(key);
-		
-		if(key == 187) levelsUnlocked++;
-		if(key == 189) levelsUnlocked--;
 		
 		//prevents arrow scrolling (includes PgUp and PgDown)
 		if($.inArray(key, ar) > -1){
@@ -734,12 +734,16 @@ $(document).ready(function(){
 			return false;	
 		}
 		
+		if(key == 187) levelsUnlocked++;
+		if(key == 189) levelsUnlocked--;
+		
 		if(screenState !== 0){
 			if(key == 27){
 				screenState = 0;
 			}
 		}
 		
+		/*
 		//Quick short cut
 		if(screenState === 0)
 		{
@@ -750,10 +754,10 @@ $(document).ready(function(){
 				
 			}
 		}
-		
-		//WASD and arrow key both supported
+		*/
 		
 		if(screenState == 1){
+			//Space to launch ball
 			if(key == 32) {
 				ball.dx = Math.floor(Math.random()*7)-3;
 				ball.dy = -7;
