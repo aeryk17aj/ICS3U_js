@@ -2,55 +2,6 @@ $(document).ready(function(){
 	
 	document.body.onmousedown = function() { return false; }; //so page is unselectable
 	
-	/*
-	//Large XML String made readable by string concatenation
-	var xml = "" + 
-	"<level id='l1'>" + 
-		"<brick id='b1'>" + 
-			"<x>240</x>" + 
-			"<y>100</y>" + 
-			"<hits>1</hits>" + 
-		"</brick>" + 
-		"<brick id='b2'>" + 
-			"<x>295</x>" + 
-			"<y>100</y>" + 
-			"<hits>1</hits>" + 
-		"</brick>" + 
-	"</level>" +
-	"<level id='l2'>" + 
-		"<brick id='b1'>" + 
-			"<x>185</x>" + 
-			"<y>100</y>" + 
-			"<hits>1</hits>" + 
-		"</brick>" + 
-		"<brick id='b2'>" + 
-			"<x>240</x>" + 
-			"<y>100</y>" + 
-			"<hits>1</hits>" + 
-		"</brick>" + 
-	"</level>";
-	
-	var xmlDoc = $.parseXML(xml);
-	var $xml = $(xmlDoc);
-	$($xml).each(function(){
-		generatelevel.push(function(){
-			//Empties current brick array
-			bricks = [];
-			//For each number of bricks
-			//push a new brick objects with specified coords from the xml
-			//bricks.push(new Brick(240,100));
-			for(var i = 0; i < $(this).find('level').length; i++){
-				bricks.push(
-					new Brick(
-						parseInt($(this).find('brick[id=b"' + (i + 1).toString() + '"] > x').text()), 
-						parseInt($(this).find('brick[id=b"' + (i + 1).toString() + '"] > y').text())
-						//parseInt($(this).find('brick[id=b"' + (i + 1).toString() + '"] > hits').text())
-					)
-				);				
-			}
-		});	
-	});
-	*/
 
 	//Canvas stuff
 	var canvas = $("#canvas")[0];
@@ -69,6 +20,7 @@ $(document).ready(function(){
 	var ss2State;
 	var levelBeaten;
 	var generateLevel;
+	var currentLevel;
 	
 	
 	/////////////////////////////////
@@ -84,36 +36,42 @@ $(document).ready(function(){
 		screenState = 0;
 		ss2State = 0; // 0 - Fail/Out of Lives | 1 - Success/Destroyed all bricks
 		levelBeaten = [0, 0];
-		
-		
+		currentLevel = 1; //Default
 		
 		generateLevel = [
 			function(){
 				//NO OP; No Level 0
 			},
 			function(){
-
+				bricks = [];
+				for(var l1r1 = 0; l1r1 < 3; l1r1++){
+					bricks[l1r1] = new Brick(240 + l1r1*55, 100);
+				}
+				for(var l1r2 = 3; l1r2 < 7; l1r2++){
+					bricks[l1r2] = new Brick(215 + (l1r2-3)*55, 125);
+				}
+				for(var l1r3 = 7; l1r3 < 10; l1r3++){
+					bricks[l1r3] = new Brick(240 + (l1r3-7)*55, 150);
+				}
+			},
+			function(){
+				bricks = [];
+				for(var l2r1 = 0; l2r1 < 5; l2r1++){
+					bricks[l2r1] = new Brick(240 + l2r1*55, 100);
+				}
+				for(var l2r2 = 5; l2r2 < 10; l2r2++){
+					bricks[l2r2] = new Brick(240 + (l2r2-3)*55, 125);
+				}
+				for(var l2r3 = 10; l2r3 < 15; l2r3++){
+					bricks[l2r3] = new Brick(240 + (l2r3-7)*55, 150);
+				}
 			},
 			function(){
 				
 			},
-			function(){
-				
-			},
-			
 		];
 		
-		/*
-			function(xml){
-				$(xml).find('levels').each(function(){
-					$(this).find('level').each(function(){
-						$(this).find('brick').each(function(){
-							
-						});
-					});
-				});
-			}
-		*/
+		generateLevel[1]();
 		
 		/*
 		Button colour indexes used in each screen
@@ -130,18 +88,6 @@ $(document).ready(function(){
 		
 		levelsUnlocked = 1;
 		skipNextLevel = false;
-		
-		bricks = [];
-		///Brick Layout Start
-		for(var ib1 = 0; ib1 < 3; ib1++){
-			bricks[ib1] = new Brick(240 + ib1*55, 100);
-		}
-		for(var ib2 = 3; ib2 < 7; ib2++){
-			bricks[ib2] = new Brick(215 + (ib2-3)*55, 125);
-		}
-		for(var ib3 = 7; ib3 < 10; ib3++){
-			bricks[ib3] = new Brick(240 + (ib3-7)*55, 150);
-		}
 		
 		///Brick Layout End
 
@@ -280,13 +226,7 @@ $(document).ready(function(){
 			ctx.fillText("Options", 30, 448);
 			
 			//Cursor
-			ctx.fillStyle = "#FFFFFF";
-			ctx.beginPath();
-			ctx.moveTo(mx, my);
-			ctx.lineTo(mx + 7, my + 9);
-			ctx.lineTo(mx, my + 14);
-			ctx.closePath();
-			ctx.fill();
+			drawCursor();
 		}
 		
 		////////
@@ -310,6 +250,9 @@ $(document).ready(function(){
 			paddle.display("white");
 			paddle.x = mx - paddle.w/2;
 			
+			//Brick init
+			
+			
 			
 			///Paddle collision
 			//X Axis check
@@ -325,7 +268,7 @@ $(document).ready(function(){
 					{
 						ball.bounceY();
 						//dx increase depending on distance from paddle centre
-						ball.dx+=Math.floor(Math.abs(ball.x - paddle.x - paddle.w/2)/(paddle.w/2));
+						ball.dx+=(-1)*Math.floor(ball.x - (paddle.x + paddle.w/2))/(paddle.w/4 - paddle.x);
 					}
 				}
 				//Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
@@ -358,9 +301,9 @@ $(document).ready(function(){
 			if(bricks.length === 0){
 				if(!skipNextLevel){
 					ss2State = 1;
-					screenState = 2;
+					setScreenFinished();
 				} else {
-					//(TODO) Go to next level
+					currentLevel++;
 				}
 				
 				//(TODO) if this level hasn't been completed yet
@@ -383,7 +326,8 @@ $(document).ready(function(){
 						//Checks if the ball is indeed on top of the brick
 						if(!(ball.y - ball.r >= bricks[iCol].y + bricks[iCol].h)){
 							ball.bounceY();
-							ball.dx+=Math.floor(Math.abs(ball.x - bricks[iCol].x - bricks[iCol].w/2)/(bricks[iCol].w/2));
+							//ball.dx+=Math.floor(Math.abs(ball.x - bricks[iCol].x - bricks[iCol].w/2)/(bricks[iCol].w/2));
+							ball.dx+=Math.floor(ball.x - (bricks[iCol].x + bricks[iCol].w/2))/(bricks[iCol].w/2 - bricks[iCol].x);
 							bricks.splice(iCol, 1);
 							break;
 						}
@@ -393,7 +337,8 @@ $(document).ready(function(){
 						//Checks if the ball is indeed on the bottom of the brick					
 						if(!(ball.y + ball.r <= bricks[iCol].y)){
 							ball.bounceY();
-							ball.dx+=Math.floor(Math.abs(ball.x - bricks[iCol].x - bricks[iCol].w/2)/(bricks[iCol].w/2));
+							//ball.dx+=Math.floor(Math.abs(ball.x - bricks[iCol].x - bricks[iCol].w/2)/(bricks[iCol].w/2));
+							ball.dx+=Math.floor(ball.x - (bricks[iCol].x + bricks[iCol].w/2))/(bricks[iCol].w/2 - bricks[iCol].x);
 							bricks.splice(iCol, 1);
 							break;
 						}
@@ -459,13 +404,7 @@ $(document).ready(function(){
 			}
 			
 			//Cursor
-			ctx.fillStyle = "#FFFFFF";
-			ctx.beginPath();
-			ctx.moveTo(mx, my);
-			ctx.lineTo(mx + 7, my + 9);
-			ctx.lineTo(mx, my + 14);
-			ctx.closePath();
-			ctx.fill();
+			drawCursor();
 		}
 		
 		////////
@@ -500,13 +439,7 @@ $(document).ready(function(){
 			}
 			
 			//Cursor
-			ctx.fillStyle = "#FFFFFF";
-			ctx.beginPath();
-			ctx.moveTo(mx, my);
-			ctx.lineTo(mx + 7, my + 9);
-			ctx.lineTo(mx, my + 14);
-			ctx.closePath();
-			ctx.fill();
+			drawCursor();
 		}
 		
 		////////
@@ -530,20 +463,44 @@ $(document).ready(function(){
 			ctx.fillText("Skip Next Level: " + (skipNextLevel ? "ON" : "OFF"), 25, 38);
 			
 			//Cursor
-			ctx.fillStyle = "#FFFFFF";
-			ctx.beginPath();
-			ctx.moveTo(mx, my);
-			ctx.lineTo(mx + 7, my + 9);
-			ctx.lineTo(mx, my + 14);
-			ctx.closePath();
-			ctx.fill();
+			drawCursor();
 		}
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
 	
+	function setScreenMenu(){
+		screenState = 0;
+	}
+	
+	function setScreenGame(){
+		screenState = 1;
+	}
+	
+	function setScreenFinished(){
+		screenState = 2;
+	}
+	
+	function setScreenSelect(){
+		screenState = 3;
+	}
+	
+	function setScreenOptions(){
+		screenState = 4;
+	}
+	
 	function setBackground(color){
 		ctx.fillStyle = color;
 		ctx.fillRect(0,0, w, h);
+	}
+	
+	function drawCursor(){
+		ctx.fillStyle = "#FFFFFF";
+		ctx.beginPath();
+		ctx.moveTo(mx, my);
+		ctx.lineTo(mx + 7, my + 9);
+		ctx.lineTo(mx, my + 14);
+		ctx.closePath();
+		ctx.fill();
 	}
 	
 	//Brick constructor
@@ -555,18 +512,12 @@ $(document).ready(function(){
 	}
 	
 	function resetBricks(){
-		bricks = [];
-		
-		//Level 1
-		for(var i = 0; i < 3; i++){
-			bricks.push(new Brick(240 + i*55, 100));
-		}
-		for(var i = 0; i < 4; i++){
-			bricks.push(new Brick(215 + i*55, 125));
-		}
-		for(var i = 0; i < 3; i++){
-			bricks.push(new Brick(240 + i*55, 150));
-		}
+		generateLevel(currentLevel);
+	};
+	
+	function setLevel(level){
+		currentLevel = level;
+		generateLevel[level]();
 	};
 	
 	////////////////////////////////////////////////////////
@@ -587,6 +538,12 @@ $(document).ready(function(){
 				if(my >= h - 210 && my <= h - 160){
 					//Goes to first level if no other levels are unlocked
 					screenState = levelsUnlocked > 1 ? 3 : 1;
+					if(levelsUnlocked > 1){
+						setScreenSelect();
+					} else {
+						setScreenGame();
+						setLevel(1);
+					}
 				}
 				//...
 				if(my >= h - 140 && my <= h - 90){
@@ -594,7 +551,7 @@ $(document).ready(function(){
 				}
 				//Options
 				if(my >= h - 70 && my <= h - 20){
-					screenState = 4;
+					setScreenOptions();
 				}
 			}
 		}
@@ -610,21 +567,22 @@ $(document).ready(function(){
 				}
 			}
 		}
+		*/
 		
 		//Level Select
 		if(screenState == 3){
 			for(var i = 0; i < 2; i++){
 				for(var j = 0; j < 5; j++){
-					if(my >= 50 + i*100 && my <= 120 + i*100){
-						if(mx >= 50 + i*100 && mx <= 120 + i*100){
-							screenState = 1;
-							//setLevel((i*5) + j + 1);
+					if(my >= 50 + (i*100) && my <= 120 + (i*100)){
+						if(mx >= 50 + (j*100) && mx <= 120 + (j*100)){
+							setScreenGame();
+							setLevel((i*5) + j + 1);
 						} 
 					} 
 				}
 			}
 		}
-		*/
+		
 		
 		//Options
 		if(screenState == 4){
@@ -736,15 +694,12 @@ $(document).ready(function(){
 			return false;	
 		}
 		
+		//Debug
 		if(key == 187) levelsUnlocked++;
 		if(key == 189) levelsUnlocked--;
 		
-		if(screenState !== 0){
-			if(key == 27){
-				screenState = 0;
-			}
-		}
-		
+		if(screenState !== 0 && key == 27) setScreenMenu();
+
 		/*
 		//Quick short cut
 		if(screenState === 0)
