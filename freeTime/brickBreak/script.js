@@ -347,7 +347,7 @@ $(document).ready(function(){
 				//If within y range
 				if(ball.y >= bricks[iCol].y && ball.y <= bricks[iCol].y + bricks[iCol].h){
 					//Left side bounce check + ball direction check
-					if(ball.x + ball.r >= bricks[iCol].x && ball.dx == Math.abs(ball.dx) && ball.dx != 0){
+					if(ball.x + ball.r >= bricks[iCol].x && ball.dx == Math.abs(ball.dx) && ball.dx !== 0){
 						//Checks if the ball is indeed on the left of the brick	
 						if(!(ball.x - ball.r >= bricks[iCol].x + bricks[iCol].w)){
 							ball.bounceX();
@@ -513,12 +513,12 @@ $(document).ready(function(){
 	
 	function resetBricks(){
 		generateLevel(currentLevel);
-	};
+	}
 	
 	function setLevel(level){
 		currentLevel = level;
 		generateLevel[level]();
-	};
+	}
 	
 	////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////
@@ -537,7 +537,6 @@ $(document).ready(function(){
 				//Play
 				if(my >= h - 210 && my <= h - 160){
 					//Goes to first level if no other levels are unlocked
-					screenState = levelsUnlocked > 1 ? 3 : 1;
 					if(levelsUnlocked > 1){
 						setScreenSelect();
 					} else {
@@ -648,7 +647,7 @@ $(document).ready(function(){
 				if(mx >= 20 && mx <= 220){
 					btnCols[15] = "#999999";
 				} else btnCols[15] = "#777777";				
-			} else btnCols[15] = "#777777"			
+			} else btnCols[15] = "#777777";			
 		}
 	}, false);
 
