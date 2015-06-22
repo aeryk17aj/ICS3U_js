@@ -15,8 +15,10 @@ $(document).ready(function(){
 	var ar;
 	var bricks;
 	var btnCols;
+	var lives;
 	var levelsUnlocked;
 	var skipNextLevel;
+	var infiniteLives;
 	var ss2State;
 	var levelBeaten;
 	var generateLevel;
@@ -32,11 +34,18 @@ $(document).ready(function(){
 	/////////////////////////////
 	function init()
 	{
-		ar = [33,34,35,36,38,40]; // array of keys not to move the webpage when pressed
+		//array of keys not to move the webpage when pressed
+		ar = [33,34,35,36,38,40]; 
+		//Default is Menu Screen
 		screenState = 0;
-		ss2State = 0; // 0 - Fail/Out of Lives | 1 - Success/Destroyed all bricks
-		levelBeaten = [0, 0];
-		currentLevel = 1; //Default
+		// 0 - Fail/Out of Lives | 1 - Success/Destroyed all bricks
+		ss2State = 0; 
+		//Array of boolean values that tells if level <index> is beaten or not (therefore, index 0 is always false)
+		levelBeaten = [false, false, false];
+		//Default
+		currentLevel = 1; 
+		
+		lives = 3;
 		
 		generateLevel = [
 			function(){
@@ -55,34 +64,35 @@ $(document).ready(function(){
 				}
 			},
 			function(){
+				//Going the lazy way with the "add more bricks" mentality
 				bricks = [];
 				for(var l2r1 = 0; l2r1 < 5; l2r1++){
-					bricks[l2r1] = new Brick(240 + l2r1*55, 100);
+					bricks[l2r1] = new Brick(185 + l2r1*55, 100);
 				}
 				for(var l2r2 = 5; l2r2 < 10; l2r2++){
-					bricks[l2r2] = new Brick(240 + (l2r2-3)*55, 125);
+					bricks[l2r2] = new Brick(185 + (l2r2-5)*55, 125);
 				}
 				for(var l2r3 = 10; l2r3 < 15; l2r3++){
-					bricks[l2r3] = new Brick(240 + (l2r3-7)*55, 150);
+					bricks[l2r3] = new Brick(185 + (l2r3-10)*55, 150);
 				}
 			},
 			function(){
-				
+				//NO OP; Level 3 would've existed with more time
 			},
 		];
 		
-		generateLevel[1]();
+		//Initiates the first level at first boot
+		generateLevel[currentLevel]();
 		
 		/*
 		Button colour indexes used in each screen
-		
-		0-2  Menu
-		3-4  Level Finished
-		5-14 Level Select
-		15   Options
+		0-2     Menu
+		3-4     Level Finished
+		5-14    Level Select
+		15-16   Options
 		*/
 		btnCols = [];
-		for(var ibc = 0; ibc < 16; ibc++){
+		for(var ibc = 0; ibc < 17; ibc++){
 			btnCols.push("#777777");
 		}
 		
@@ -168,8 +178,6 @@ $(document).ready(function(){
 			ctx.fillRect(this.x, this.y, this.w, this.h);		
 		};
 		
-		
-
 	//////////
 	///STATE VARIABLES
 	
@@ -206,7 +214,7 @@ $(document).ready(function(){
 			//BG
 			setBackground("#333333");
 
-			///3 Buttons - [Play], [], [Options]
+			///3 Buttons - [Play], [...], [Options]
 			//Shadow
 			for(var iSh = 0; iSh < 3; iSh++){
 				ctx.fillStyle = btnCols[iSh] == "#999999" ? "#777777" : "#666666";
@@ -248,11 +256,11 @@ $(document).ready(function(){
 			
 			//Paddle init
 			paddle.display("white");
-			paddle.x = mx - paddle.w/2;
-			
-			//Brick init
-			
-			
+			///Paddle position based on mouse position
+			//if the paddle is right by the black boundaries
+			if(mx >= 100 + paddle.w/2 && mx <= w - 100 - paddle.w/2){
+				paddle.x = mx - paddle.w/2;
+			}
 			
 			///Paddle collision
 			//X Axis check
@@ -267,8 +275,8 @@ $(document).ready(function(){
 					if(!(ball.y - ball.r >= paddle.y + paddle.h))
 					{
 						ball.bounceY();
-						//dx increase depending on distance from paddle centre
-						ball.dx+=(-1)*Math.floor(ball.x - (paddle.x + paddle.w/2))/(paddle.w/4 - paddle.x);
+						//random dx increase (if it's 0); ranges from -3 to 3
+						ball.dx+= Math.floor(ball.dx) === 0 ?  (Math.random()*7) - 4 : 0;
 					}
 				}
 				//Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
@@ -291,13 +299,14 @@ $(document).ready(function(){
 			{
 				ball.resetPosition();
 				paddle.resetPosition();
-				//resetBricks();		
+				lives+= infiniteLives ? 0 : -1;				
 			}
 			
 			//Ball speed limiter, so the slight speed increase won't go too far
 			if(ball.dx > 7) ball.dx = 7;
 			if(ball.dx < -7) ball.dx = -7;
 			
+			//Win condition
 			if(bricks.length === 0){
 				if(!skipNextLevel){
 					ss2State = 1;
@@ -306,10 +315,16 @@ $(document).ready(function(){
 					currentLevel++;
 				}
 				
-				//(TODO) if this level hasn't been completed yet
-				if(!levelBeaten[0]) {
+				if(!levelBeaten[currentLevel]) {
+					levelBeaten[currentLevel] = true;
 					levelsUnlocked++; 
 				}
+			}
+			
+			//Lose condition
+			if(lives === 0){
+				ss2State = 0;
+				setScreenFinished();
 			}
 			
 			//Brick display
@@ -326,7 +341,6 @@ $(document).ready(function(){
 						//Checks if the ball is indeed on top of the brick
 						if(!(ball.y - ball.r >= bricks[iCol].y + bricks[iCol].h)){
 							ball.bounceY();
-							//ball.dx+=Math.floor(Math.abs(ball.x - bricks[iCol].x - bricks[iCol].w/2)/(bricks[iCol].w/2));
 							ball.dx+=Math.floor(ball.x - (bricks[iCol].x + bricks[iCol].w/2))/(bricks[iCol].w/2 - bricks[iCol].x);
 							bricks.splice(iCol, 1);
 							break;
@@ -337,7 +351,6 @@ $(document).ready(function(){
 						//Checks if the ball is indeed on the bottom of the brick					
 						if(!(ball.y + ball.r <= bricks[iCol].y)){
 							ball.bounceY();
-							//ball.dx+=Math.floor(Math.abs(ball.x - bricks[iCol].x - bricks[iCol].w/2)/(bricks[iCol].w/2));
 							ball.dx+=Math.floor(ball.x - (bricks[iCol].x + bricks[iCol].w/2))/(bricks[iCol].w/2 - bricks[iCol].x);
 							bricks.splice(iCol, 1);
 							break;
@@ -368,7 +381,6 @@ $(document).ready(function(){
 			}
 		}
 		
-		
 		////////
 		///LEVEL FINISHED SCREEN
 		////////
@@ -376,31 +388,53 @@ $(document).ready(function(){
 			//BG
 			setBackground("#333333");
 			
-			if(ss2State === 0){
-				//Fail text
-				ctx.font = "40px Arial";
+			//Failure State - Will never get selected as the lives aren't currently implemented 
+			if(ss2State === 0)
+			{
+				//Level Failed text
+				ctx.font = "40px Calibri";
 				ctx.fillStyle = "#FF1111";
 				ctx.fillText("Level Failed", 10, 50);
+				ctx.fillText("You lost all 3 lives", 10, 100);
 				
-				//Only button goes back to menu
+				//Shadow
+				ctx.fillStyle = btnCols[3] == "#999999" ? "#777777" : "#666666";
+				ctx.fillRect(17, h - 67, 200, 50);
 				
-			} else if(ss2State == 1){
-				//Next Level text
+				//Front
+				ctx.fillStyle = btnCols[3];
+				ctx.fillRect(20, h - 70, 200, 50);
+				
+				//Button Text
+				ctx.font = "48px Calibri";
+				ctx.fillStyle = "#333333";
+				ctx.fillText("Menu", 35, 450);
+			} 
+			//Victory State
+			else if(ss2State == 1)
+			{
+				//Level Finished text
+				ctx.font = "40px Calibri";
 				ctx.fillStyle = "#11FF11";
 				ctx.fillText("Level Finished", 10, 50);
-				//Buttons for Next Level and back to Menu
 				
-			}
-			
-			//Shadow
-			for(var i = 0; i < 2; i++){
-				ctx.fillStyle = btnCols[i + 3] == "#999999" ? "#777777" : "#666666";
-				ctx.fillRect(17 + (i*220), h - 67, 200, 50);
-			}
-			//Front
-			for(var i = 0; i < 2; i++){
-				ctx.fillStyle = btnCols[i + 3];
-				ctx.fillRect(20 + (i*220), h - 70, 200, 50);
+				//Buttons for Next Level and back to Menu
+				//Shadow
+				for(var i = 0; i < 2; i++){
+					ctx.fillStyle = btnCols[i + 3] == "#999999" ? "#777777" : "#666666";
+					ctx.fillRect(17 + (i*220), h - 67, 200, 50);
+				}
+				//Front
+				for(var i = 0; i < 2; i++){
+					ctx.fillStyle = btnCols[i + 3];
+					ctx.fillRect(20 + (i*220), h - 70, 200, 50);
+				}
+				
+				//Button Text
+				ctx.font = "48px Calibri";
+				ctx.fillStyle = "#333333";
+				ctx.fillText("Menu", 35, 450);
+				ctx.fillText("Next Lvl", 255, 450);
 			}
 			
 			//Cursor
@@ -450,17 +484,22 @@ $(document).ready(function(){
 			setBackground("#333333");
 			
 			//Shadow
-			ctx.fillStyle = btnCols[15] == "#999999" ? "#777777" : "#666666";
-			ctx.fillRect(17, 23, 200, 25);
+			for(var i = 0; i < 2; i++){
+				ctx.fillStyle = btnCols[i + 15] == "#999999" ? "#777777" : "#666666";
+				ctx.fillRect(17, 23 + i*30, 200, 25);
+			}
 			
 			//Front
-			ctx.fillStyle = btnCols[16];
-			ctx.fillRect(20, 20, 200, 25);
+			for(var i = 0; i < 2; i++){
+				ctx.fillStyle = btnCols[i + 15];
+				ctx.fillRect(20, 20 + i*30, 200, 25);
+			}
 			
 			//Button Text
 			ctx.font = "20px Calibri";
 			ctx.fillStyle = "#FFFFFF";
 			ctx.fillText("Skip Next Level: " + (skipNextLevel ? "ON" : "OFF"), 25, 38);
+			ctx.fillText("Infinite Lives: " + (infiniteLives ? "ON" : "OFF"), 25, 68);
 			
 			//Cursor
 			drawCursor();
@@ -468,31 +507,20 @@ $(document).ready(function(){
 		
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
 	
-	function setScreenMenu(){
-		screenState = 0;
-	}
+	function setScreen(num){screenState = num;}
 	
-	function setScreenGame(){
-		screenState = 1;
-	}
-	
-	function setScreenFinished(){
-		screenState = 2;
-	}
-	
-	function setScreenSelect(){
-		screenState = 3;
-	}
-	
-	function setScreenOptions(){
-		screenState = 4;
-	}
+	function setScreenMenu(){       setScreen(0);   }
+	function setScreenGame(){       setScreen(1);   }
+	function setScreenFinished(){   setScreen(2);   }
+	function setScreenSelect(){     setScreen(3);   }
+	function setScreenOptions(){    setScreen(4);   }
 	
 	function setBackground(color){
 		ctx.fillStyle = color;
 		ctx.fillRect(0,0, w, h);
 	}
 	
+	//Cursor used in all screens but the game screen
 	function drawCursor(){
 		ctx.fillStyle = "#FFFFFF";
 		ctx.beginPath();
@@ -533,40 +561,71 @@ $(document).ready(function(){
 	{
 		//Menu
 		if(screenState === 0){
-			if(mx >= 20 && mx <= 220){
-				//Play
-				if(my >= h - 210 && my <= h - 160){
-					//Goes to first level if no other levels are unlocked
-					if(levelsUnlocked > 1){
-						setScreenSelect();
-					} else {
-						setScreenGame();
-						setLevel(1);
+			for(var i = 0; i < 3; i++){
+				if(my >= h - 210 + (i*70) && my <= h - 160 + (i*70)){
+					if(mx >= 20 && mx <= 220){
+						console.log(i);
+						switch(i){
+							//Play
+							case 0:
+								//Goes to first level if no other levels are unlocked
+								if(levelsUnlocked > 1){
+									setScreenSelect();
+								} else {
+									setScreenGame();
+									setLevel(1);
+								}
+								break;
+							//...
+							case 1:
+								alert("You expected a change of screens, but it was me, an alert!");
+								break;
+							//Options
+							case 2:
+								setScreenOptions();
+								break;
+							default:
+						}
 					}
-				}
-				//...
-				if(my >= h - 140 && my <= h - 90){
-					
-				}
-				//Options
-				if(my >= h - 70 && my <= h - 20){
-					setScreenOptions();
 				}
 			}
 		}
 		
-		/*
+		//Game
+		if(screenState == 1){
+			if(ball.dx == 0 && ball.dy == 0){
+				ball.dx = Math.floor(Math.random()*7)-3;
+				ball.dy = -7;
+			}
+		}
+		
+		
 		//Level Finished
 		if(screenState == 2){
 			for(var i = 0; i < 2; i++){
 				if(my >= h - 70 && my <= h - 20){
 					if(mx >= 20 + (i*220) && mx <= (i+1)*220){
-						
+						switch(i){
+							//Main Menu
+							case 0:
+								setScreenMenu();
+								break;
+							//Next Level
+							case 1:
+								if(currentLevel == 1){
+									setScreenGame();
+									setLevel(2);
+								} else if(currentLevel == 2){
+									alert("That's the end of it!");
+								}
+								break;
+							default:
+						}
 					}
 				}
 			}
 		}
-		*/
+		
 		
 		//Level Select
 		if(screenState == 3){
@@ -585,11 +644,22 @@ $(document).ready(function(){
 		
 		//Options
 		if(screenState == 4){
-			if(my >= 20 && my <= 45){
-				if(mx >= 20 && mx <= 220){
-					//Skip Next Level Screen (Not fail state)
-					if(skipNextLevel) skipNextLevel = false;
-					else if(!skipNextLevel) skipNextLevel = true;
+			for(var i = 0; i < 2; i++){
+				if(my >= 20 + i*30 && my <= 45 + i*30){
+					if(mx >= 20 && mx <= 220){
+						switch(i){
+							case 0:
+								//Skip Next Level Screen (Not fail state)
+								if(skipNextLevel) skipNextLevel = false;
+								else if(!skipNextLevel) skipNextLevel = true;
+								break;
+							case 1:
+								//Toggle Lives
+								if(infiniteLives) infiniteLives = false;
+								else if(!infiniteLives) infiniteLives = true;
+							default:
+						}
+					}
 				}
 			}
 		}
@@ -623,8 +693,8 @@ $(document).ready(function(){
 				if(my >= h - 70 && my <= h - 20){
 					if(mx >= 20 + (i*220) && mx <= (i+1)*220){
 						btnCols[i + 3] = "#999999";
-					} else btnCols[i] = "#777777";					
-				} else btnCols[i] = "#777777";				
+					} else btnCols[i + 3] = "#777777";		
+				} else btnCols[i + 3] = "#777777";				
 			}
 		}
 		
@@ -643,11 +713,13 @@ $(document).ready(function(){
 		
 		//Options
 		if(screenState == 4){
-			if(my >= 20 && my <= 45){
-				if(mx >= 20 && mx <= 220){
-					btnCols[15] = "#999999";
-				} else btnCols[15] = "#777777";				
-			} else btnCols[15] = "#777777";			
+			for(var i = 0; i < 2; i++){
+				if(my >= 20 + i*30 && my <= 45 + i*30){
+					if(mx >= 20 && mx <= 220){
+						btnCols[i + 15] = "#999999";
+					} else btnCols[i + 15] = "#777777";				
+				} else btnCols[i + 15] = "#777777";		
+			}			
 		}
 	}, false);
 
@@ -697,28 +769,25 @@ $(document).ready(function(){
 		if(key == 187) levelsUnlocked++;
 		if(key == 189) levelsUnlocked--;
 		
+		//Esc to menu
 		if(screenState !== 0 && key == 27) setScreenMenu();
 
-		/*
-		//Quick short cut
-		if(screenState === 0)
+		//Quick short cut: Warps straight to the 'Level Finished' screen. Feel free to use this to see if things work
+		if(screenState === 0 || screenState == 1)
 		{
 			if(key == 13)
 			{
-				//ss2State = 1;
-				//screenState = 2;
-				
+				ss2State = 1;
+				setScreenFinished();
 			}
 		}
-		*/
 		
 		if(screenState == 1){
-			//Space to launch ball
+			//Alternative ball launch: Space 
 			if(key == 32 && ball.dx === 0 && ball.dy === 0) {
 				ball.dx = Math.floor(Math.random()*7)-3;
 				ball.dy = -7;
 			}
 		}
-		
 	}, false);
 });
