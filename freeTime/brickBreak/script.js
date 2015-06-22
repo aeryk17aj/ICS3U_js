@@ -388,7 +388,7 @@ $(document).ready(function(){
 			//BG
 			setBackground("#333333");
 			
-			//Failure State - Will never get selected as the lives aren't currently implemented 
+			//Failure State
 			if(ss2State === 0)
 			{
 				//Level Failed text
