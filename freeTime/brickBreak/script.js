@@ -593,7 +593,7 @@ $(document).ready(function(){
 		
 		//Game
 		if(screenState == 1){
-			if(ball.dx == 0 && ball.dy == 0){
+			if(ball.dx === 0 && ball.dy === 0){
 				ball.dx = Math.floor(Math.random()*7)-3;
 				ball.dy = -7;
 			}
@@ -657,6 +657,7 @@ $(document).ready(function(){
 								//Toggle Lives
 								if(infiniteLives) infiniteLives = false;
 								else if(!infiniteLives) infiniteLives = true;
+								break;
 							default:
 						}
 					}
