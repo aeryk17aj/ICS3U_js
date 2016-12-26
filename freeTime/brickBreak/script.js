@@ -3,25 +3,26 @@ $(document).ready(function(){
 	document.body.onmousedown = function() { return false; }; //so page is unselectable
 
 	//Canvas stuff
-	var canvas = $("#canvas")[0];
-	var ctx = canvas.getContext("2d");
-	var w = $("#canvas").width();
-	var h = $("#canvas").height();
-	var mx, my;
-	var screenState;
-	var ball;
-	var paddle;
-	var ar;
-	var bricks;
-	var btnCols;
-	var lives;
-	var levelsUnlocked;
-	var skipNextLevel;
-	var infiniteLives;
-	var ss2State;
-	var levelBeaten;
-	var generateLevel;
-	var currentLevel;
+	const canvas = $("#canvas")[0];
+	const ctx = canvas.getContext("2d");
+	const w = $("#canvas").width();
+	const h = $("#canvas").height();
+	let game_loop;
+	let mx, my;
+	let screenState;
+	let ball;
+	let paddle;
+	let ar;
+	let bricks;
+	let btnCols;
+	let lives;
+	let levelsUnlocked;
+	let skipNextLevel;
+	let infiniteLives;
+	let ss2State;
+	let levelBeaten;
+	let generateLevel;
+	let currentLevel;
 	
 	/////////////////////////////////
 	////////////////////////////////
@@ -51,32 +52,32 @@ $(document).ready(function(){
 			},
 			function(){
 				bricks = [];
-				for(var l1r1 = 0; l1r1 < 3; l1r1++){
+				for(let l1r1 = 0; l1r1 < 3; l1r1++){
 					bricks[l1r1] = new Brick(240 + l1r1*55, 100);
 				}
-				for(var l1r2 = 3; l1r2 < 7; l1r2++){
+				for(let l1r2 = 3; l1r2 < 7; l1r2++){
 					bricks[l1r2] = new Brick(215 + (l1r2-3)*55, 125);
 				}
-				for(var l1r3 = 7; l1r3 < 10; l1r3++){
+				for(let l1r3 = 7; l1r3 < 10; l1r3++){
 					bricks[l1r3] = new Brick(240 + (l1r3-7)*55, 150);
 				}
 			},
 			function(){
 				//Going the lazy way with the "add more bricks" mentality
 				bricks = [];
-				for(var l2r1 = 0; l2r1 < 5; l2r1++){
+				for(let l2r1 = 0; l2r1 < 5; l2r1++){
 					bricks[l2r1] = new Brick(185 + l2r1*55, 100);
 				}
-				for(var l2r2 = 5; l2r2 < 10; l2r2++){
+				for(let l2r2 = 5; l2r2 < 10; l2r2++){
 					bricks[l2r2] = new Brick(185 + (l2r2-5)*55, 125);
 				}
-				for(var l2r3 = 10; l2r3 < 15; l2r3++){
+				for(let l2r3 = 10; l2r3 < 15; l2r3++){
 					bricks[l2r3] = new Brick(185 + (l2r3-10)*55, 150);
 				}
 			},
 			function(){
 				//NO OP; Level 3 would've existed with more time
-			},
+			}
 		];
 		
 		//Initiates the first level at first boot
@@ -90,7 +91,7 @@ $(document).ready(function(){
 		15-16   Options
 		*/
 		btnCols = [];
-		for(var ibc = 0; ibc < 17; ibc++){
+		for(let ibc = 0; ibc < 17; ibc++){
 			btnCols.push("#777777");
 		}
 		
@@ -175,17 +176,8 @@ $(document).ready(function(){
 			ctx.fillStyle = color;
 			ctx.fillRect(this.x, this.y, this.w, this.h);		
 		};
-		
-	//////////
-	///STATE VARIABLES
-	
-	//////////////////////
-	///GAME ENGINE START
-	//	This starts the game/program
-	//	"paint is the piece of code that runs over and over again, so put all the stuff you want to draw in here
-	//	"60" sets the interval in milliseconds between frame refreshes
 
-	if(typeof game_loop != "undefined") clearInterval(game_loop);
+		if (typeof game_loop != "undefined") clearInterval(game_loop);
 		game_loop = setInterval(paint, 14);
 		//7 144fps
 		//9 120fps
@@ -214,12 +206,12 @@ $(document).ready(function(){
 
 			///3 Buttons - [Play], [...], [Options]
 			//Shadow
-			for (var iSh = 0; iSh < 3; iSh++){
+			for (let iSh = 0; iSh < 3; iSh++){
 				ctx.fillStyle = btnCols[iSh] == "#999999" ? "#777777" : "#666666";
 				ctx.fillRect(17, h - 67 - (iSh*70), 200, 50);
 			}
 			//Front
-			for(var iFr = 0; iFr < 3; iFr++){
+			for(let iFr = 0; iFr < 3; iFr++){
 				ctx.fillStyle = btnCols[iFr];
 				ctx.fillRect(20, h - 70 - (iFr*70), 200, 50);
 			}
@@ -326,12 +318,12 @@ $(document).ready(function(){
 			}
 			
 			//Brick display
-			for(var ibd = 0; ibd < bricks.length; ibd++){
+			for(let ibd = 0; ibd < bricks.length; ibd++){
 				bricks[ibd].display("#99FF99");
 			}
 			
 			//Brick collision
-			for(var iCol = 0; iCol < bricks.length; iCol++){				
+			for(let iCol = 0; iCol < bricks.length; iCol++){				
 				//If within x range
 				if(ball.x >= bricks[iCol].x && ball.x <= bricks[iCol].x + bricks[iCol].w){
 					//Top side bounce check + ball direction check
@@ -360,7 +352,7 @@ $(document).ready(function(){
 					//Left side bounce check + ball direction check
 					if(ball.x + ball.r >= bricks[iCol].x && ball.dx == Math.abs(ball.dx) && ball.dx !== 0){
 						//Checks if the ball is indeed on the left of the brick	
-						if(!(ball.x - ball.r >= bricks[iCol].x + bricks[iCol].w)){
+						if(ball.x - ball.r < bricks[iCol].x + bricks[iCol].w){
 							ball.bounceX();
 							bricks.splice(iCol, 1);
 							break;
@@ -369,7 +361,7 @@ $(document).ready(function(){
 					//Right side bounce check + ball direction check
 					if(ball.x - ball.r <= bricks[iCol].x + bricks[iCol].w && ball.dx != Math.abs(ball.dx)){
 						//Checks if the ball is indeed on the right of the brick	
-						if(!(ball.x + ball.r <= bricks[iCol].x)){
+						if(ball.x + ball.r > bricks[iCol].x){
 							ball.bounceX();
 							bricks.splice(iCol, 1);
 							break;
@@ -418,12 +410,12 @@ $(document).ready(function(){
 				
 				//Buttons for Next Level and back to Menu
 				//Shadow
-				for(var i = 0; i < 2; i++){
+				for(let i = 0; i < 2; i++){
 					ctx.fillStyle = btnCols[i + 3] == "#999999" ? "#777777" : "#666666";
 					ctx.fillRect(17 + (i*220), h - 67, 200, 50);
 				}
 				//Front
-				for(var i = 0; i < 2; i++){
+				for(let i = 0; i < 2; i++){
 					ctx.fillStyle = btnCols[i + 3];
 					ctx.fillRect(20 + (i*220), h - 70, 200, 50);
 				}
@@ -445,18 +437,17 @@ $(document).ready(function(){
 		if(screenState == 3){
 			//BG
 			setBackground("#333333");
-			
 			//Shadow
-			for(var i = 0; i < 2; i++){
-				for(var j = 0; j < 5; j++){
+			for(let i = 0; i < 2; i++){
+				for(let j = 0; j < 5; j++){
 					ctx.fillStyle = btnCols[i*5 + j + 5] == "#999999" ? "#777777" : "#666666";
 					ctx.fillRect(47 + j*100, 53 + i*100, 70, 70);
 				}
 			}
 			
 			//Front
-			for(var i = 0; i < 2; i++){
-				for(var j = 0; j < 5; j++){
+			for(let i = 0; i < 2; i++){
+				for(let j = 0; j < 5; j++){
 					ctx.fillStyle = btnCols[i*5 + j + 5];
 					ctx.fillRect(50 + j*100, 50 + i*100, 70, 70);
 					
@@ -482,13 +473,13 @@ $(document).ready(function(){
 			setBackground("#333333");
 			
 			//Shadow
-			for(var i = 0; i < 2; i++){
+			for(let i = 0; i < 2; i++){
 				ctx.fillStyle = btnCols[i + 15] == "#999999" ? "#777777" : "#666666";
 				ctx.fillRect(17, 23 + i*30, 200, 25);
 			}
 			
 			//Front
-			for(var i = 0; i < 2; i++){
+			for(let i = 0; i < 2; i++){
 				ctx.fillStyle = btnCols[i + 15];
 				ctx.fillRect(20, 20 + i*30, 200, 25);
 			}
@@ -555,11 +546,10 @@ $(document).ready(function(){
 	/////////////////
 	///Mouse Click
 	///////////////
-	canvas.addEventListener('click', function (evt)
-	{
+	canvas.addEventListener('click', e => {
 		//Menu
 		if(screenState === 0){
-			for(var i = 0; i < 3; i++){
+			for(let i = 0; i < 3; i++){
 				if(my >= h - 210 + (i*70) && my <= h - 160 + (i*70)){
 					if(mx >= 20 && mx <= 220){
 						console.log(i);
@@ -600,7 +590,7 @@ $(document).ready(function(){
 		
 		//Level Finished
 		if(screenState == 2){
-			for(var i = 0; i < 2; i++){
+			for(let i = 0; i < 2; i++){
 				if(my >= h - 70 && my <= h - 20){
 					if(mx >= 20 + (i*220) && mx <= (i+1)*220){
 						switch(i){
@@ -627,8 +617,8 @@ $(document).ready(function(){
 		
 		//Level Select
 		if(screenState == 3){
-			for(var i = 0; i < 2; i++){
-				for(var j = 0; j < 5; j++){
+			for(let i = 0; i < 2; i++){
+				for(let j = 0; j < 5; j++){
 					if(my >= 50 + (i*100) && my <= 120 + (i*100)){
 						if(mx >= 50 + (j*100) && mx <= 120 + (j*100)){
 							setScreenGame();
@@ -642,7 +632,7 @@ $(document).ready(function(){
 		
 		//Options
 		if(screenState == 4){
-			for(var i = 0; i < 2; i++){
+			for(let i = 0; i < 2; i++){
 				if(my >= 20 + i*30 && my <= 45 + i*30){
 					if(mx >= 20 && mx <= 220){
 						switch(i){
@@ -664,11 +654,11 @@ $(document).ready(function(){
 		}
 	}, false);
 
-	canvas.addEventListener ('mouseout', function(){pause = true;}, false);
-	canvas.addEventListener ('mouseover', function(){pause = false;}, false);
+	canvas.addEventListener ('mouseout', () => {});
+	canvas.addEventListener ('mouseover', () => {});
 
 	canvas.addEventListener('mousemove', function(evt) {
-		var mousePos = getMousePos(canvas, evt);
+		const mousePos = getMousePos(canvas, evt);
 
 		mx = mousePos.x;
 		my = mousePos.y;
@@ -677,7 +667,7 @@ $(document).ready(function(){
 		
 		//Menu
 		if(screenState === 0){
-			for(var i = 0; i < 3; i++){
+			for(let i = 0; i < 3; i++){
 				if(my >= h - ((i+1)*70) && my <= h -  20 - (i*70)){
 					if(mx >= 20 && mx <= 220){
 						btnCols[i] = "#999999";
@@ -688,7 +678,7 @@ $(document).ready(function(){
 		
 		//Level Finished
 		if(screenState == 2){
-			for(var i = 0; i < 2; i++){
+			for(let i = 0; i < 2; i++){
 				if(my >= h - 70 && my <= h - 20){
 					if(mx >= 20 + (i*220) && mx <= (i+1)*220){
 						btnCols[i + 3] = "#999999";
@@ -699,8 +689,8 @@ $(document).ready(function(){
 		
 		//Level Select
 		if(screenState == 3){
-			for(var i = 0; i < 2; i++){
-				for(var j = 0; j < 5; j++){
+			for(let i = 0; i < 2; i++){
+				for(let j = 0; j < 5; j++){
 					if(my >= 50 + (i*100) && my <= 120 + (i*100)){
 						if(mx >= 50 + (j*100) && mx <= 120 + (j*100)){
 							btnCols[i*5 + j + 5] = "#999999";
@@ -712,7 +702,7 @@ $(document).ready(function(){
 		
 		//Options
 		if(screenState == 4){
-			for(var i = 0; i < 2; i++){
+			for(let i = 0; i < 2; i++){
 				if(my >= 20 + i*30 && my <= 45 + i*30){
 					if(mx >= 20 && mx <= 220){
 						btnCols[i + 15] = "#999999";
@@ -724,11 +714,11 @@ $(document).ready(function(){
 
 	function getMousePos(canvas, evt) 
 	{
-	        var rect = canvas.getBoundingClientRect();
-        	return {
-          		x: evt.clientX - rect.left,
-          		y: evt.clientY - rect.top
-        	};
+		const rect = canvas.getBoundingClientRect();
+		return {
+			x: evt.clientX - rect.left,
+			y: evt.clientY - rect.top
+		};
 	}
       
 	///////////////////////////////////
@@ -754,7 +744,7 @@ $(document).ready(function(){
 	*/
 	
 	window.addEventListener('keydown', function(evt){
-		var key = evt.keyCode;
+		const key = evt.keyCode;
 		
 		//alert(key);
 		
