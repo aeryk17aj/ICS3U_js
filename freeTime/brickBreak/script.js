@@ -214,9 +214,9 @@ $(document).ready(function(){
 
 			///3 Buttons - [Play], [...], [Options]
 			//Shadow
-			for (let i = 0; i < 3; i++){
-				ctx.fillStyle = btnCols[i] == "#999999" ? "#777777" : "#666666";
-				ctx.fillRect(17, h - 67 - (i*70), 200, 50);
+			for (var iSh = 0; iSh < 3; iSh++){
+				ctx.fillStyle = btnCols[iSh] == "#999999" ? "#777777" : "#666666";
+				ctx.fillRect(17, h - 67 - (iSh*70), 200, 50);
 			}
 			//Front
 			for(var iFr = 0; iFr < 3; iFr++){
