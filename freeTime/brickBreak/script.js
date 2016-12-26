@@ -1,7 +1,6 @@
 $(document).ready(function(){
 	
 	document.body.onmousedown = function() { return false; }; //so page is unselectable
-	
 
 	//Canvas stuff
 	var canvas = $("#canvas")[0];
@@ -23,7 +22,6 @@ $(document).ready(function(){
 	var levelBeaten;
 	var generateLevel;
 	var currentLevel;
-	
 	
 	/////////////////////////////////
 	////////////////////////////////
@@ -216,9 +214,9 @@ $(document).ready(function(){
 
 			///3 Buttons - [Play], [...], [Options]
 			//Shadow
-			for(var iSh = 0; iSh < 3; iSh++){
-				ctx.fillStyle = btnCols[iSh] == "#999999" ? "#777777" : "#666666";
-				ctx.fillRect(17, h - 67 - (iSh*70), 200, 50);
+			for (let i = 0; i < 3; i++){
+				ctx.fillStyle = btnCols[i] == "#999999" ? "#777777" : "#666666";
+				ctx.fillRect(17, h - 67 - (i*70), 200, 50);
 			}
 			//Front
 			for(var iFr = 0; iFr < 3; iFr++){
@@ -272,7 +270,7 @@ $(document).ready(function(){
 					//Ball location check
 					//This makes only the top side of the paddle bounce the ball
 					//If the ball goes through the paddle, it simply passes through
-					if(!(ball.y - ball.r >= paddle.y + paddle.h))
+					if(ball.y - ball.r < paddle.y + paddle.h)
 					{
 						ball.bounceY();
 						//random dx increase (if it's 0); ranges from -3 to 3
@@ -339,7 +337,7 @@ $(document).ready(function(){
 					//Top side bounce check + ball direction check
 					if(ball.y + ball.r >= bricks[iCol].y && ball.dy == Math.abs(ball.dy) && ball.dy !== 0){
 						//Checks if the ball is indeed on top of the brick
-						if(!(ball.y - ball.r >= bricks[iCol].y + bricks[iCol].h)){
+						if(ball.y - ball.r < bricks[iCol].y + bricks[iCol].h){
 							ball.bounceY();
 							ball.dx+=Math.floor(ball.x - (bricks[iCol].x + bricks[iCol].w/2))/(bricks[iCol].w/2 - bricks[iCol].x);
 							bricks.splice(iCol, 1);
@@ -349,7 +347,7 @@ $(document).ready(function(){
 					//Bottom side bounce check + ball direction check
 					if(ball.y - ball.r <= bricks[iCol].y + bricks[iCol].h && ball.dy != Math.abs(ball.dy)){
 						//Checks if the ball is indeed on the bottom of the brick					
-						if(!(ball.y + ball.r <= bricks[iCol].y)){
+						if(ball.y + ball.r > bricks[iCol].y){
 							ball.bounceY();
 							ball.dx+=Math.floor(ball.x - (bricks[iCol].x + bricks[iCol].w/2))/(bricks[iCol].w/2 - bricks[iCol].x);
 							bricks.splice(iCol, 1);
@@ -364,7 +362,7 @@ $(document).ready(function(){
 						//Checks if the ball is indeed on the left of the brick	
 						if(!(ball.x - ball.r >= bricks[iCol].x + bricks[iCol].w)){
 							ball.bounceX();
-							bricks.splice(i, 1);
+							bricks.splice(iCol, 1);
 							break;
 						}
 					}
@@ -373,7 +371,7 @@ $(document).ready(function(){
 						//Checks if the ball is indeed on the right of the brick	
 						if(!(ball.x + ball.r <= bricks[iCol].x)){
 							ball.bounceX();
-							bricks.splice(i, 1);
+							bricks.splice(iCol, 1);
 							break;
 						}
 					}
