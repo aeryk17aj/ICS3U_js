@@ -1,42 +1,36 @@
 @charset "utf-8";
 /* Universal CSS Document for most assignment pages*/
-body
-{
-font-size:25px;
-font-family:Arial, Helvetica, sans-serif;
-background-color:#C6DDDC;
-color:#000000;
-margin:5px;
-float:right;
-position:relative;
-right:25%;
+body {
+	font-size:25px;
+	font-family:Arial, Helvetica, sans-serif;
+	background-color:#C6DDDC;
+	color:#000000;
+	margin:5px;
+	float:right;
+	position:relative;
+	right:25%;
 }
 
 h1 {
-color:#FFFFFF;
-font-size:35px;
-font-family:Arial, Helvetica, sans-serif;
+	color:#FFFFFF;
+	font-size:35px;
+	font-family:Arial, Helvetica, sans-serif;
 }
 h2 {
-font-size:30px;
+	font-size:30px;
 }
 h3 {
-font-size:25px;
+	font-size:25px;
 }
 h4 {
-font-size:20px;
+	font-size:20px;
 }
-th
-{
-font-size:23px;
-background-color:blue;
-color:#FFFFFF;
+th {
+	font-size:23px;
+	background-color:blue;
+	color:#FFFFFF;
 }
-td
-{
-font-size:20px;
+td {
+	font-size:20px;
 }
-canvas
-{
-/*cursor:none;*/
-}
+
