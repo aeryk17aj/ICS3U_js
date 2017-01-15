@@ -736,17 +736,17 @@ $(document).ready(function () {
 			ss2State = 1;
 			setScreenFinished();
 		}
-	}
+	};
 
 	// Menu escape
-	keyMap[27] = () => { if (screenState !== 0) setScreenMenu(); }
+	keyMap[27] = () => { if (screenState !== 0) setScreenMenu(); };
 	keyMap[32] = () => {
 		//Alternative ball launch: Space
 		if (screenState === 1 && ball.dx === 0 && ball.dy === 0) {
 			ball.dx = Math.floor(Math.random() * 7) - 3;
 			ball.dy = -7;
 		}
-	}
+	};
 
 	//Debug
 	keyMap[187] = () => levelsUnlocked++;
