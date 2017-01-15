@@ -635,66 +635,73 @@ $(document).ready(function () {
 	canvas.addEventListener ('mouseout', () => {});
 	canvas.addEventListener ('mouseover', () => {});
 
+	/// Button colour change through mouseover (technically mousemove)
+	/*
+	Button colour indexes used in each screen
+	0-2     Menu
+	3-4     Level Finished
+	5-14    Level Select
+	15-16   Options
+	*/
+
+	// index = screenState
+	let hoverResponse = [];
+
+	// Menu
+	hoverResponse[0] = () => {
+		for (let i = 0; i < 3; i++) {
+			if (my >= h - ((i + 1) * 70) && my <= h -  20 - (i * 70)) {
+				if (mx >= 20 && mx <= 220) {
+					btnCols[i] = "#999999";
+				} else btnCols[i] = "#777777";
+			} else btnCols[i] = "#777777";
+		}
+	};
+
+	//Nothing for 1
+
+	// Level finished
+	hoverResponse[2] = () => {
+		for (let i = 0; i < 2; i++) {
+			if (my >= h - 70 && my <= h - 20) {
+				if (mx >= 20 + (i * 220) && mx <= (i + 1) * 220) {
+					btnCols[i + 3] = "#999999";
+				} else btnCols[i + 3] = "#777777";
+			} else btnCols[i + 3] = "#777777";
+		}
+	};
+
+	// Level select
+	hoverResponse[3] = () => {
+		for (let i = 0; i < 2; i++) {
+			for (let j = 0; j < 5; j++) {
+				if (my >= 50 + (i * 100) && my <= 120 + (i * 100)) {
+					if (mx >= 50 + (j * 100) && mx <= 120 + (j * 100)) {
+						btnCols[i * 5 + j + 5] = "#999999";
+					} else btnCols[i * 5 + j + 5] = "#777777";
+				} else btnCols[i * 5 + j + 5] = "#777777";
+			}
+		}
+	};
+
+	// Options
+	hoverResponse[4] = () => {
+		for (let i = 0; i < 2; i++) {
+			if (my >= 20 + i * 30 && my <= 45 + i * 30) {
+				if (mx >= 20 && mx <= 220) {
+					btnCols[i + 15] = "#999999";
+				} else btnCols[i + 15] = "#777777";
+			} else btnCols[i + 15] = "#777777";
+		}
+	};
+
 	canvas.addEventListener('mousemove', function (evt) {
 		const mousePos = getMousePos(evt);
 
 		mx = mousePos.x;
 		my = mousePos.y;
 
-		///Button colour change through mouseover (technically mousemove)
-		/*
-		Button colour indexes used in each screen
-		0-2     Menu
-		3-4     Level Finished
-		5-14    Level Select
-		15-16   Options
-		*/
-
-		//Menu
-		if (screenState === 0) {
-			for (let i = 0; i < 3; i++) {
-				if (my >= h - ((i + 1) * 70) && my <= h -  20 - (i * 70)) {
-					if (mx >= 20 && mx <= 220) {
-						btnCols[i] = "#999999";
-					} else btnCols[i] = "#777777";
-				} else btnCols[i] = "#777777";
-			}
-		}
-
-		//Level Finished
-		if (screenState == 2) {
-			for (let i = 0; i < 2; i++) {
-				if (my >= h - 70 && my <= h - 20) {
-					if (mx >= 20 + (i * 220) && mx <= (i + 1) * 220) {
-						btnCols[i + 3] = "#999999";
-					} else btnCols[i + 3] = "#777777";
-				} else btnCols[i + 3] = "#777777";
-			}
-		}
-
-		//Level Select
-		if (screenState == 3) {
-			for (let i = 0; i < 2; i++) {
-				for (let j = 0; j < 5; j++) {
-					if (my >= 50 + (i * 100) && my <= 120 + (i * 100)) {
-						if (mx >= 50 + (j * 100) && mx <= 120 + (j * 100)) {
-							btnCols[i * 5 + j + 5] = "#999999";
-						} else btnCols[i * 5 + j + 5] = "#777777";
-					} else btnCols[i * 5 + j + 5] = "#777777";
-				}
-			}
-		}
-
-		//Options
-		if (screenState == 4) {
-			for (let i = 0; i < 2; i++) {
-				if (my >= 20 + i * 30 && my <= 45 + i * 30) {
-					if (mx >= 20 && mx <= 220) {
-						btnCols[i + 15] = "#999999";
-					} else btnCols[i + 15] = "#777777";
-				} else btnCols[i + 15] = "#777777";
-			}
-		}
+		hoverResponse[screenState]();
 	}, false);
 
 	function getMousePos (evt)
