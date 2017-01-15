@@ -728,10 +728,32 @@ $(document).ready(function () {
 	-_ 189
 	*/
 
+	let keyMap = [];
+
+	// Quick short cut: Warps straight to the 'Level Finished' screen. Feel free to use this to see if things work
+	keyMap[13] = () => {
+		if (screenState === 0 || screenState == 1) {
+			ss2State = 1;
+			setScreenFinished();
+		}
+	}
+
+	// Menu escape
+	keyMap[27] = () => { if (screenState !== 0) setScreenMenu(); }
+	keyMap[32] = () => {
+		//Alternative ball launch: Space
+		if (screenState === 1 && ball.dx === 0 && ball.dy === 0) {
+			ball.dx = Math.floor(Math.random() * 7) - 3;
+			ball.dy = -7;
+		}
+	}
+
+	//Debug
+	keyMap[187] = () => levelsUnlocked++;
+	keyMap[189] = () => levelsUnlocked--;
+
 	window.addEventListener('keydown', function (evt) {
 		const key = evt.keyCode;
-
-		//alert(key);
 
 		//prevents arrow scrolling (includes PgUp and PgDown)
 		if ($.inArray(key, ar) > -1) {
@@ -739,29 +761,6 @@ $(document).ready(function () {
 			return false;
 		}
 
-		//Debug
-		if (key == 187) levelsUnlocked++;
-		if (key == 189) levelsUnlocked--;
-
-		//Esc to menu
-		if (screenState !== 0 && key == 27) setScreenMenu();
-
-		//Quick short cut: Warps straight to the 'Level Finished' screen. Feel free to use this to see if things work
-		if (screenState === 0 || screenState == 1)
-		{
-			if (key == 13)
-			{
-				ss2State = 1;
-				setScreenFinished();
-			}
-		}
-
-		if (screenState == 1) {
-			//Alternative ball launch: Space
-			if (key == 32 && ball.dx === 0 && ball.dy === 0) {
-				ball.dx = Math.floor(Math.random() * 7) - 3;
-				ball.dy = -7;
-			}
-		}
+		keyMap[key]();
 	}, false);
 });
