@@ -218,10 +218,10 @@ $(document).ready(function () {
 	window.addEventListener('keydown', function (evt) {
 		const key = evt.keyCode;
 
-		if (key == 37) if (!(snakeHeadX == 1)) snakeHeadX -= 21;
-		else if (key == 38) if (!(snakeHeadY == 1)) snakeHeadY -= 21;
-		else if (key == 39) if (!(snakeHeadX == w - 21)) snakeHeadX += 21;
-		else if (key == 40) if (!(snakeHeadY == h - 21))snakeHeadY += 21;
+		if (key == 37) if (snakeHeadX != 1) snakeHeadX -= 21;
+		else if (key == 38) if (snakeHeadY != 1) snakeHeadY -= 21;
+		else if (key == 39) if (snakeHeadX != w - 21) snakeHeadX += 21;
+		else if (key == 40) if (snakeHeadY != h - 21)snakeHeadY += 21;
 		if (key > 36 && key < 41) direction = key - 36;
 		console.log(key);
 
