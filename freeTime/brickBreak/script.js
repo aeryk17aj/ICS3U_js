@@ -252,7 +252,7 @@ $(document).ready(function () {
 				{
 					ball.bounceY();
 					//random dx increase (if it's 0); ranges from -3 to 3
-					ball.dx += Math.floor(ball.dx) === 0 ?  (Math.random() * 7) - 4 : 0;
+					ball.dx += Math.floor(ball.dx) === 0 ? (Math.random() * 7) - 4 : 0;
 				}
 			}
 			//Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
@@ -260,19 +260,12 @@ $(document).ready(function () {
 
 		///Ball wall bounce
 		//Upper wall
-		if (ball.y < ball.r)
-		{
-			ball.bounceY();
-		}
+		if (ball.y < ball.r) ball.bounceY();
 		//Side walls
-		if (ball.x < ball.r + 100 || ball.x > w - ball.r - 100)
-		{
-			ball.bounceX();
-		}
+		if (ball.x < ball.r + 100 || ball.x > w - ball.r - 100) ball.bounceX();
 
 		//The bottom is a pit. The ball resets if it goes there
-		if (ball.y - ball.r > h)
-		{
+		if (ball.y - ball.r > h) {
 			ball.resetPosition();
 			paddle.resetPosition();
 			lives += infiniteLives ? 0 : -1;
@@ -287,9 +280,7 @@ $(document).ready(function () {
 			if (!skipNextLevel) {
 				ss2State = 1;
 				setScreenFinished();
-			} else {
-				currentLevel++;
-			}
+			} else currentLevel++;
 
 			if (!levelBeaten[currentLevel]) {
 				levelBeaten[currentLevel] = true;
@@ -645,7 +636,7 @@ $(document).ready(function () {
 	canvas.addEventListener ('mouseover', () => {});
 
 	canvas.addEventListener('mousemove', function (evt) {
-		const mousePos = getMousePos(canvas, evt);
+		const mousePos = getMousePos(evt);
 
 		mx = mousePos.x;
 		my = mousePos.y;
@@ -706,7 +697,7 @@ $(document).ready(function () {
 		}
 	}, false);
 
-	function getMousePos (canvas, evt)
+	function getMousePos (evt)
 	{
 		const rect = canvas.getBoundingClientRect();
 		return {

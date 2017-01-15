@@ -99,7 +99,7 @@ $(document).ready(function () {
 		else if (direction == "up") ny--;
 		else if (direction == "down") ny++;
 
-		if (nx == -1 || nx == w / cw || ny == -1 || ny == h / cw || checkCollision(nx, ny, snakeArray))
+		if (nx == -1 || nx == w / cellWidth || ny == -1 || ny == h / cellWidth || checkCollision(nx, ny, snakeArray))
 		{
 			init();
 			return;
@@ -132,7 +132,7 @@ $(document).ready(function () {
 	////////// FUNCTIONS
 	function spawnFruit () {
 		ctx.fillStyle = "#FF0000";
-		if (fruitX == 0 || fruitY == 0) {
+		if (fruitX === 0 || fruitY === 0) {
 			generateFruitCoords();
 		}
 		ctx.fillRect(fruitX, fruitY, cellWidth, cellHeight);
@@ -178,7 +178,7 @@ $(document).ready(function () {
 	/////////////////
 	// Mouse Click
 	///////////////
-	canvas.addEventListener('click', function (evt) {
+	canvas.addEventListener('click', function () {
 		if (mx >= w - 21 && my >= h - 21 && mx <= w && my <= h) {
 			generateFruitCoords();
 		}
@@ -192,18 +192,17 @@ $(document).ready(function () {
 		}
 	}, false);
 
-	canvas.addEventListener ('mouseout', function () {pause = true;}, false);
-	canvas.addEventListener ('mouseover', function () {pause = false;}, false);
+	canvas.addEventListener('mouseout', function () {});
+	canvas.addEventListener('mouseover', function () {});
 
 	canvas.addEventListener('mousemove', function (evt) {
-		const mousePos = getMousePos(canvas, evt);
+		const mousePos = getMousePos(evt);
 
 		mx = mousePos.x;
 		my = mousePos.y;
 	}, false);
 
-	function getMousePos (canvas, evt)
-	{
+	function getMousePos (evt) {
 		const rect = canvas.getBoundingClientRect();
 		return {
 			x: evt.clientX - rect.left,
@@ -219,52 +218,17 @@ $(document).ready(function () {
 	window.addEventListener('keydown', function (evt) {
 		const key = evt.keyCode;
 
-		if (key == 37)
-		{
-			if (!(snakeHeadX == 1))
-			{
-				snakeHeadX -= 21;
-			}
-		}
-		else if (key == 38)
-		{
-			if (!(snakeHeadY == 1))
-			{
-				snakeHeadY -= 21;
-			}
-		}
-		else if (key == 39)
-		{
-			if (!(snakeHeadX == w - 21))
-			{
-				snakeHeadX += 21;
-			}
-		}
-		else if (key == 40)
-		{
-			if (!(snakeHeadY == h - 21))
-			{
-				snakeHeadY += 21;
-			}
-		}
-		if (key > 36 && key < 41) {
-			direction = key - 36;
-		}
+		if (key == 37) if (!(snakeHeadX == 1)) snakeHeadX -= 21;
+		else if (key == 38) if (!(snakeHeadY == 1)) snakeHeadY -= 21;
+		else if (key == 39) if (!(snakeHeadX == w - 21)) snakeHeadX += 21;
+		else if (key == 40) if (!(snakeHeadY == h - 21))snakeHeadY += 21;
+		if (key > 36 && key < 41) direction = key - 36;
 		console.log(key);
 
-		//p 80
-		//r 82
-		//1 49
-		//2 50
-		//3 51
-		//w 87
-		//a 65
-		//s 83
-		//d 68
-		//left 37
-		//up 38
-		//right 39
-		//down 40
+		// P  R  1  2  3  W  A  S  D
+		// 80 82 49 50 51 87 65 83 68
 
+		// (Direction) U  D  L  R
+		//             38 40 37 39
 	}, false);
 });
