@@ -9,6 +9,7 @@ $(document).ready(function () {
 	const h = $("#canvas").height();
 	let mx, my;
 	let game_loop;
+	let ar;
 
 	let snakeHeadX, snakeHeadY;
 	let snakeSpeed;
@@ -29,15 +30,14 @@ $(document).ready(function () {
 	//////	Use this code to get everything in order before your game starts
 	//////////////////////////////
 	/////////////////////////////
-	function init ()
-	{
-
-	//////////
-	///STATE VARIABLES
+	function init () {
+		//array of keys not to move the webpage when pressed
+		ar = [33,34,35,36];
 
 		snakeHeadX = 1;
 		snakeHeadY = 1;
 		snakeSpeed = 1;
+		snakeArray = [];
 
 		tileX = 1;
 		tileY = 1;
@@ -81,15 +81,10 @@ $(document).ready(function () {
 		ctx.fillStyle = "#888888";
 		ctx.fillRect(0,0, w, h);
 
-		//Game Grid (White Squares)
-		ctx.fillStyle = "#FFFFFF";
-		for (let i = 0; i < gridLength; i++) {
-			tileX = 1 + (21 * i);
-			for (let j = 0; j < gridHeight; j++) {
-				tileY = 1 + (21 * j);
-				ctx.fillRect(tileX, tileY, cellWidth, cellHeight);
-			}
-		}
+		drawGrid();
+		spawnSnake();
+		drawSnake();
+		spawnFruit();
 
 		let nx = snakeArray[0].x;
 		let ny = snakeArray[0].y;
@@ -99,14 +94,10 @@ $(document).ready(function () {
 		else if (direction == "up") ny--;
 		else if (direction == "down") ny++;
 
-		if (nx == -1 || nx == w / cellWidth || ny == -1 || ny == h / cellWidth || checkCollision(nx, ny, snakeArray))
-		{
+		if (nx == -1 || nx == w / cellWidth || ny == -1 || ny == h / cellWidth || wallCheck(nx, ny)) {
 			init();
 			return;
 		}
-
-		/*spawnSnake();
-		spawnFruit();*/
 
 		/*if(snakeHeadX == fruitX && snakeHeadY == fruitY){
 			generateFruitCoords();
@@ -130,6 +121,18 @@ $(document).ready(function () {
 	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
 
 	////////// FUNCTIONS
+
+	function drawGrid () {
+		ctx.fillStyle = "#FFFFFF";
+		for (let i = 0; i < gridLength; i++) {
+			tileX = 1 + (21 * i);
+			for (let j = 0; j < gridHeight; j++) {
+				tileY = 1 + (21 * j);
+				ctx.fillRect(tileX, tileY, cellWidth, cellHeight);
+			}
+		}
+	}
+
 	function spawnFruit () {
 		ctx.fillStyle = "#FF0000";
 		if (fruitX === 0 || fruitY === 0) {
@@ -139,13 +142,8 @@ $(document).ready(function () {
 	}
 
 	function spawnSnake () {
-		let snakeLength = 3;
-		snakeArray = [];
-		for (let i = length - 1; i >= 0; i--)
-		{
-			snakeArray.push({x:i, y:0});
-		}
-		ctx.fillStyle = "#000000";
+		const snakeLength = 3;
+		for (let i = snakeLength - 1; i >= 0; i--) snakeArray.push({'x':i, 'y':0});
 		if (snakeHeadX < (1 + ((cellWidth + 1) * 5)) || snakeHeadX > (1 + ((cellWidth + 1) * 25))) {
 			if (snakeHeadY < (1 + ((cellHeight + 1) * 5)) || snakeHeadY > 1 + ((cellHeight + 1) * 25)) {
 				if (!started) {
@@ -154,6 +152,10 @@ $(document).ready(function () {
 				}
 			}
 		}
+	}
+
+	function drawSnake () {
+		ctx.fillStyle = "#000000";
 		ctx.fillRect(snakeHeadX, snakeHeadY, cellWidth, cellHeight);
 	}
 
@@ -165,6 +167,11 @@ $(document).ready(function () {
 	function generateSnakeCoords () {
 		snakeHeadX = 1 + ((cellWidth + 1) * 5) + ((cellWidth + 1) * (Math.round(Math.random() * (gridLength - 10))));
 		snakeHeadY = 1 + ((cellHeight + 1) * 5) + ((cellHeight + 1) * (Math.round(Math.random() * (gridHeight - 10))));
+	}
+
+	function wallCheck (x, y) {
+		// console.log(`${x} ${y}`);
+		if (x < 0 || y < 0) return true;
 	}
 
 	////////// FUNCTIONS END
@@ -218,12 +225,25 @@ $(document).ready(function () {
 	window.addEventListener('keydown', function (evt) {
 		const key = evt.keyCode;
 
-		if (key == 37) if (snakeHeadX != 1) snakeHeadX -= 21;
-		else if (key == 38) if (snakeHeadY != 1) snakeHeadY -= 21;
-		else if (key == 39) if (snakeHeadX != w - 21) snakeHeadX += 21;
-		else if (key == 40) if (snakeHeadY != h - 21)snakeHeadY += 21;
+		if ($.inArray(key, ar) > -1) {
+			evt.preventDefault;
+			return false;
+		}
+
+		if (key == 37) {
+			if (snakeHeadX != 1) snakeHeadX -= 21;
+		}
+		else if (key == 38) {
+			if (snakeHeadY != 1) snakeHeadY -= 21;
+		}
+		else if (key == 39) {
+			if (snakeHeadX != w - 21) snakeHeadX += 21;
+		}
+		else if (key == 40) {
+			if (snakeHeadY != h - 21)snakeHeadY += 21;
+		}
 		if (key > 36 && key < 41) direction = key - 36;
-		console.log(key);
+		// console.log(key);
 
 		// P  R  1  2  3  W  A  S  D
 		// 80 82 49 50 51 87 65 83 68
