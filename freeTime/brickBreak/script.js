@@ -1,12 +1,11 @@
 $(document).ready(function () {
+	document.body.onmousedown = function () { return false; }; // so page is unselectable
 
-	document.body.onmousedown = function () { return false; }; //so page is unselectable
-
-	//Canvas stuff
-	const canvas = $("#canvas")[0];
-	const ctx = canvas.getContext("2d");
-	const w = $("#canvas").width();
-	const h = $("#canvas").height();
+	// Canvas stuff
+	const canvas = $('#canvas')[0];
+	const ctx = canvas.getContext('2d');
+	const w = $('#canvas').width();
+	const h = $('#canvas').height();
 	let game_loop;
 	let mx, my;
 	let screenState;
@@ -25,30 +24,28 @@ $(document).ready(function () {
 	let generateLevel;
 	let currentLevel;
 
-	/////////////////////////////////
-	////////////////////////////////
-	////////	GAME INIT
-	///////	Runs this code right away, as soon as the page loads.
-	//////	Use this code to get everything in order before your game starts
-	//////////////////////////////
-	/////////////////////////////
+	/*****************
+	 * Game init
+	 * Runs this code right away, as soon as the page loads.
+	 * Use this code to get everything in order before your game starts
+	 ******/
 	function init () {
-		//array of keys not to move the webpage when pressed
-		ar = [33,34,35,36,38,40];
-		//Default is Menu Screen
+		// array of keys not to move the webpage when pressed
+		ar = [33, 34, 35, 36, 38, 40];
+		// Default is Menu Screen
 		screenState = 0;
 		// 0 - Fail/Out of Lives | 1 - Success/Destroyed all bricks
 		ss2State = 0;
-		//Array of boolean values that tells if level <index> is beaten or not (therefore, index 0 is always false)
+		// Array of boolean values that tells if level <index> is beaten or not (therefore, index 0 is always false)
 		levelBeaten = [false, false, false];
-		//Default
+		// Default
 		currentLevel = 1;
 
 		lives = 3;
 
 		generateLevel = [
 			function () {
-				//NO OP; No Level 0
+				// NO OP; No Level 0
 			},
 			function () {
 				bricks = [];
@@ -63,7 +60,7 @@ $(document).ready(function () {
 				}
 			},
 			function () {
-				//Going the lazy way with the "add more bricks" mentality
+				// Going the lazy way with the 'add more bricks' mentality
 				bricks = [];
 				for (let l2r1 = 0; l2r1 < 5; l2r1++) {
 					bricks[l2r1] = new Brick(185 + l2r1 * 55, 100);
@@ -76,11 +73,11 @@ $(document).ready(function () {
 				}
 			},
 			function () {
-				//NO OP; Level 3 would've existed with more time
+				// NO OP; Level 3 would've existed with more time
 			}
 		];
 
-		//Initiates the first level at first boot
+		// Initiates the first level at first boot
 		generateLevel[currentLevel]();
 
 		/*
@@ -92,24 +89,24 @@ $(document).ready(function () {
 		*/
 		btnCols = [];
 		for (let ibc = 0; ibc < 17; ibc++) {
-			btnCols.push("#777777");
+			btnCols.push('#777777');
 		}
 
 		levelsUnlocked = 1;
 		skipNextLevel = false;
 
-		///Brick Layout End
+		// Brick Layout End
 
-		//Ball object
+		// Ball object
 		ball = {
-			x : w / 2,
-			y : 440,//h*(3/4)
-			//Radius
-			r : 7,
+			x: w / 2,
+			y: 440, // h*(3/4)
 
-			//Velocity in 2 directions
-			dx : 0,
-			dy : 0
+			r: 7, // Radius
+
+			// Velocity in 2 directions
+			dx: 0,
+			dy: 0
 		};
 
 		ball.display = function (color) {
@@ -141,16 +138,16 @@ $(document).ready(function () {
 			ball.dy = ball.dy * (-1);
 		};
 
-		//Paddle object
+		// Paddle object
 		paddle = {
-			h : 10,
-			w : 100,
+			h: 10,
+			w: 100,
 
-			//Starting position
-			x : w / 2 - 50, //Perfectly centred horizontally
-			y : 450, //Near the bottom
+			// Starting position
+			x: w / 2 - 50, // Perfectly centred horizontally
+			y: 450, // Near the bottom
 
-			s : 20 //speed limit
+			s: 20 // speed limit
 		};
 
 		paddle.display = function (color) {
@@ -169,113 +166,110 @@ $(document).ready(function () {
 			paddle.x = w / 2 - 50;
 		};
 
-		//Brick static function
+		// Brick static function
 		Brick.prototype.display = function (color) {
 			this.color = color;
 			ctx.fillStyle = color;
 			ctx.fillRect(this.x, this.y, this.w, this.h);
 		};
 
-		if (typeof game_loop != "undefined") clearInterval(game_loop);
+		if (typeof game_loop !== 'undefined') clearInterval(game_loop);
 		game_loop = setInterval(paint, 14);
-		//7 144fps
-		//9 120fps
-		//10 100fps
-		//14 75fps
-		//17 60fps
+		// 7 144fps
+		// 9 120fps
+		// 10 100fps
+		// 14 75fps
+		// 17 60fps
 	}
 
 	init();
 
-	////////
-	///MENU SCREEN
-	////////
+	/*****************
+	 * Menu
+	 ******/
 	displayScreen[0] = () => {
-		//BG
-		setBackground("#333333");
+		// BG
+		setBackground('#333333');
 
-		///3 Buttons - [Play], [...], [Options]
-		//Shadow
+		// 3 Buttons - [Play], [...], [Options]
+		// Shadow
 		for (let iSh = 0; iSh < 3; iSh++) {
-			ctx.fillStyle = btnCols[iSh] == "#999999" ? "#777777" : "#666666";
+			ctx.fillStyle = btnCols[iSh] === '#999999' ? '#777777' : '#666666';
 			ctx.fillRect(17, h - 67 - (iSh * 70), 200, 50);
 		}
-		//Front
+		// Front
 		for (let iFr = 0; iFr < 3; iFr++) {
 			ctx.fillStyle = btnCols[iFr];
 			ctx.fillRect(20, h - 70 - (iFr * 70), 200, 50);
 		}
 
-		//Text
-		ctx.font = "48px Calibri";
-		ctx.fillStyle = "#333333";
-		ctx.fillText("Play", 30, 308);
-		ctx.fillText("...", 30, 378);
-		ctx.fillText("Options", 30, 448);
+		// Text
+		ctx.font = '48px Calibri';
+		ctx.fillStyle = '#333333';
+		ctx.fillText('Play', 30, 308);
+		ctx.fillText('...', 30, 378);
+		ctx.fillText('Options', 30, 448);
 
-		//Cursor
+		// Cursor
 		drawCursor();
 	};
 
 	displayScreen[1] = () => {
-		//BG
-		setBackground("#222222");
+		// BG
+		setBackground('#222222');
 
-		//Side Border Overlay
-		ctx.fillStyle = "#000000";
-		ctx.fillRect(0,0, 100, h);
+		// Side Border Overlay
+		ctx.fillStyle = '#000000';
+		ctx.fillRect(0, 0, 100, h);
 		ctx.fillRect(w - 100, 0, 100, h);
 
-		//Ball init
-		ball.display("#119911");
+		// Ball init
+		ball.display('#119911');
 		ball.move();
 
-		//Paddle init
-		paddle.display("white");
-		///Paddle position based on mouse position
-		//if the paddle is right by the black boundaries
+		// Paddle init
+		paddle.display('white');
+		// Paddle position based on mouse position
+		// if the paddle is right by the black boundaries
 		if (mx >= 100 + paddle.w / 2 && mx <= w - 100 - paddle.w / 2) {
 			paddle.x = mx - paddle.w / 2;
 		}
 
-		///Paddle collision
-		//X Axis check
-		if (ball.x >= paddle.x + ball.r && ball.x <= (paddle.x +  paddle.w) - ball.r)
-		{
-			//Y Axis + ball direction check (checks if dy is positive, to be specific)
-			if (ball.y + ball.r >= paddle.y && ball.dy == Math.abs(ball.dy))
-			{
-				//Ball location check
-				//This makes only the top side of the paddle bounce the ball
-				//If the ball goes through the paddle, it simply passes through
-				if (ball.y - ball.r < paddle.y + paddle.h)
-				{
+		// Paddle collision
+		// X Axis check
+		if (ball.x >= paddle.x + ball.r && ball.x <= (paddle.x + paddle.w) - ball.r) {
+			// Y Axis + ball direction check (checks if dy is positive, to be specific)
+			if (ball.y + ball.r >= paddle.y && ball.dy === Math.abs(ball.dy)) {
+				// Ball location check
+				// This makes only the top side of the paddle bounce the ball
+				// If the ball goes through the paddle, it simply passes through
+				if (ball.y - ball.r < paddle.y + paddle.h) {
 					ball.bounceY();
-					//random dx increase (if it's 0); ranges from -3 to 3
+					// random dx increase (if it's 0); ranges from -3 to 3
 					ball.dx += Math.floor(ball.dx) === 0 ? (Math.random() * 7) - 4 : 0;
 				}
 			}
-			//Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
+			// Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
 		}
 
-		///Ball wall bounce
-		//Upper wall
+		// Ball wall bounce
+		// Upper wall
 		if (ball.y < ball.r) ball.bounceY();
-		//Side walls
+		// Side walls
 		if (ball.x < ball.r + 100 || ball.x > w - ball.r - 100) ball.bounceX();
 
-		//The bottom is a pit. The ball resets if it goes there
+		// The bottom is a pit. The ball resets if it goes there
 		if (ball.y - ball.r > h) {
 			ball.resetPosition();
 			paddle.resetPosition();
 			lives += infiniteLives ? 0 : -1;
 		}
 
-		//Ball speed limiter, so the slight speed increase won't go too far
+		// Ball speed limiter, so the slight speed increase won't go too far
 		if (ball.dx > 7) ball.dx = 7;
 		if (ball.dx < -7) ball.dx = -7;
 
-		//Win condition
+		// Win condition
 		if (bricks.length === 0) {
 			if (!skipNextLevel) {
 				ss2State = 1;
@@ -288,24 +282,24 @@ $(document).ready(function () {
 			}
 		}
 
-		//Lose condition
+		// Lose condition
 		if (lives === 0) {
 			ss2State = 0;
 			setScreenFinished();
 		}
 
-		//Brick display
+		// Brick display
 		for (let ibd = 0; ibd < bricks.length; ibd++) {
-			bricks[ibd].display("#99FF99");
+			bricks[ibd].display('#99FF99');
 		}
 
-		//Brick collision
+		// Brick collision
 		for (let iCol = 0; iCol < bricks.length; iCol++) {
-			//If within x range
+			// If within x range
 			if (ball.x >= bricks[iCol].x && ball.x <= bricks[iCol].x + bricks[iCol].w) {
-				//Top side bounce check + ball direction check
-				if (ball.y + ball.r >= bricks[iCol].y && ball.dy == Math.abs(ball.dy) && ball.dy !== 0) {
-					//Checks if the ball is indeed on top of the brick
+				// Top side bounce check + ball direction check
+				if (ball.y + ball.r >= bricks[iCol].y && ball.dy === Math.abs(ball.dy) && ball.dy !== 0) {
+					// Checks if the ball is indeed on top of the brick
 					if (ball.y - ball.r < bricks[iCol].y + bricks[iCol].h) {
 						ball.bounceY();
 						ball.dx += Math.floor(ball.x - (bricks[iCol].x + bricks[iCol].w / 2)) / (bricks[iCol].w / 2 - bricks[iCol].x);
@@ -313,9 +307,9 @@ $(document).ready(function () {
 						break;
 					}
 				}
-				//Bottom side bounce check + ball direction check
-				if (ball.y - ball.r <= bricks[iCol].y + bricks[iCol].h && ball.dy != Math.abs(ball.dy)) {
-					//Checks if the ball is indeed on the bottom of the brick
+				// Bottom side bounce check + ball direction check
+				if (ball.y - ball.r <= bricks[iCol].y + bricks[iCol].h && ball.dy !== Math.abs(ball.dy)) {
+					// Checks if the ball is indeed on the bottom of the brick
 					if (ball.y + ball.r > bricks[iCol].y) {
 						ball.bounceY();
 						ball.dx += Math.floor(ball.x - (bricks[iCol].x + bricks[iCol].w / 2)) / (bricks[iCol].w / 2 - bricks[iCol].x);
@@ -324,20 +318,20 @@ $(document).ready(function () {
 					}
 				}
 			}
-			//If within y range
+			// If within y range
 			if (ball.y >= bricks[iCol].y && ball.y <= bricks[iCol].y + bricks[iCol].h) {
-				//Left side bounce check + ball direction check
-				if (ball.x + ball.r >= bricks[iCol].x && ball.dx == Math.abs(ball.dx) && ball.dx !== 0) {
-					//Checks if the ball is indeed on the left of the brick
+				// Left side bounce check + ball direction check
+				if (ball.x + ball.r >= bricks[iCol].x && ball.dx === Math.abs(ball.dx) && ball.dx !== 0) {
+					// Checks if the ball is indeed on the left of the brick
 					if (ball.x - ball.r < bricks[iCol].x + bricks[iCol].w) {
 						ball.bounceX();
 						bricks.splice(iCol, 1);
 						break;
 					}
 				}
-				//Right side bounce check + ball direction check
-				if (ball.x - ball.r <= bricks[iCol].x + bricks[iCol].w && ball.dx != Math.abs(ball.dx)) {
-					//Checks if the ball is indeed on the right of the brick
+				// Right side bounce check + ball direction check
+				if (ball.x - ball.r <= bricks[iCol].x + bricks[iCol].w && ball.dx !== Math.abs(ball.dx)) {
+					// Checks if the ball is indeed on the right of the brick
 					if (ball.x + ball.r > bricks[iCol].x) {
 						ball.bounceX();
 						bricks.splice(iCol, 1);
@@ -349,133 +343,130 @@ $(document).ready(function () {
 	};
 
 	displayScreen[2] = () => {
-		//BG
-		setBackground("#333333");
+		// BG
+		setBackground('#333333');
 
-		//Failure State
-		if (ss2State === 0)
-		{
-			//Level Failed text
-			ctx.font = "40px Calibri";
-			ctx.fillStyle = "#FF1111";
-			ctx.fillText("Level Failed", 10, 50);
-			ctx.fillText("You lost all 3 lives", 10, 100);
+		// Failure State
+		if (ss2State === 0) {
+			// Level Failed text
+			ctx.font = '40px Calibri';
+			ctx.fillStyle = '#FF1111';
+			ctx.fillText('Level Failed', 10, 50);
+			ctx.fillText('You lost all 3 lives', 10, 100);
 
-			//Shadow
-			ctx.fillStyle = btnCols[3] == "#999999" ? "#777777" : "#666666";
+			// Shadow
+			ctx.fillStyle = btnCols[3] === '#999999' ? '#777777' : '#666666';
 			ctx.fillRect(17, h - 67, 200, 50);
 
-			//Front
+			// Front
 			ctx.fillStyle = btnCols[3];
 			ctx.fillRect(20, h - 70, 200, 50);
 
-			//Button Text
-			ctx.font = "48px Calibri";
-			ctx.fillStyle = "#333333";
-			ctx.fillText("Menu", 35, 450);
-		}
-		//Victory State
-		else if (ss2State == 1)
-		{
-			//Level Finished text
-			ctx.font = "40px Calibri";
-			ctx.fillStyle = "#11FF11";
-			ctx.fillText("Level Finished", 10, 50);
+			// Button Text
+			ctx.font = '48px Calibri';
+			ctx.fillStyle = '#333333';
+			ctx.fillText('Menu', 35, 450);
+		// Victory State
+		} else if (ss2State === 1) {
+			// Level Finished text
+			ctx.font = '40px Calibri';
+			ctx.fillStyle = '#11FF11';
+			ctx.fillText('Level Finished', 10, 50);
 
-			//Buttons for Next Level and back to Menu
-			//Shadow
+			// Buttons for Next Level and back to Menu
+			// Shadow
 			for (let i = 0; i < 2; i++) {
-				ctx.fillStyle = btnCols[i + 3] == "#999999" ? "#777777" : "#666666";
+				ctx.fillStyle = btnCols[i + 3] === '#999999' ? '#777777' : '#666666';
 				ctx.fillRect(17 + (i * 220), h - 67, 200, 50);
 			}
-			//Front
+			// Front
 			for (let i = 0; i < 2; i++) {
 				ctx.fillStyle = btnCols[i + 3];
 				ctx.fillRect(20 + (i * 220), h - 70, 200, 50);
 			}
 
-			//Button Text
-			ctx.font = "48px Calibri";
-			ctx.fillStyle = "#333333";
-			ctx.fillText("Menu", 35, 450);
-			ctx.fillText("Next Lvl", 255, 450);
+			// Button Text
+			ctx.font = '48px Calibri';
+			ctx.fillStyle = '#333333';
+			ctx.fillText('Menu', 35, 450);
+			ctx.fillText('Next Lvl', 255, 450);
 		}
 
-		//Cursor
+		// Cursor
 		drawCursor();
 	};
 
-	////////
-	///LEVEL SELECT SCREEN
-	////////
+	/*****************
+	 * Level Select
+	 ******/
 	displayScreen[3] = () => {
-		//BG
-		setBackground("#333333");
-		//Shadow
+		// BG
+		setBackground('#333333');
+		// Shadow
 		for (let i = 0; i < 2; i++) {
 			for (let j = 0; j < 5; j++) {
-				ctx.fillStyle = btnCols[i * 5 + j + 5] == "#999999" ? "#777777" : "#666666";
+				ctx.fillStyle = btnCols[i * 5 + j + 5] === '#999999' ? '#777777' : '#666666';
 				ctx.fillRect(47 + j * 100, 53 + i * 100, 70, 70);
 			}
 		}
 
-		//Front
+		// ront
 		for (let i = 0; i < 2; i++) {
 			for (let j = 0; j < 5; j++) {
 				ctx.fillStyle = btnCols[i * 5 + j + 5];
 				ctx.fillRect(50 + j * 100, 50 + i * 100, 70, 70);
 
-				//Level Number Display
-				ctx.fillStyle = "#FFFFFF";
+				// Level Number Display
+				ctx.fillStyle = '#FFFFFF';
 				ctx.fillText(
 					i * 5 + j + 1,
-					70 + j * 100  - ((i * 5 + j + 1).toString().length > 1 ? ((i * 5 + j + 1).toString().length - 1) * 10 : 0),
+					70 + j * 100 - ((i * 5 + j + 1).toString().length > 1 ? ((i * 5 + j + 1).toString().length - 1) * 10 : 0),
 					100 + i * 100
 				);
 			}
 		}
 
-		//Cursor
+		// Cursor
 		drawCursor();
 	};
 
-	////////
-	///OPTIONS SCREEN
-	////////
+	/*****************
+	 * Options
+	 ******/
 	displayScreen[4] = () => {
-		//BG
-		setBackground("#333333");
+		// BG
+		setBackground('#333333');
 
-		//Shadow
+		// Shadow
 		for (let i = 0; i < 2; i++) {
-			ctx.fillStyle = btnCols[i + 15] == "#999999" ? "#777777" : "#666666";
+			ctx.fillStyle = btnCols[i + 15] === '#999999' ? '#777777' : '#666666';
 			ctx.fillRect(17, 23 + i * 30, 200, 25);
 		}
 
-		//Front
+		// Front
 		for (let i = 0; i < 2; i++) {
 			ctx.fillStyle = btnCols[i + 15];
 			ctx.fillRect(20, 20 + i * 30, 200, 25);
 		}
 
-		//Button Text
-		ctx.font = "20px Calibri";
-		ctx.fillStyle = "#FFFFFF";
-		ctx.fillText("Skip Next Level: " + (skipNextLevel ? "ON" : "OFF"), 25, 38);
-		ctx.fillText("Infinite Lives: " + (infiniteLives ? "ON" : "OFF"), 25, 68);
+		// Button Text
+		ctx.font = '20px Calibri';
+		ctx.fillStyle = '#FFFFFF';
+		ctx.fillText('Skip Next Level: ' + (skipNextLevel ? 'ON' : 'OFF'), 25, 38);
+		ctx.fillText('Infinite Lives: ' + (infiniteLives ? 'ON' : 'OFF'), 25, 68);
 
-		//Cursor
+		// Cursor
 		drawCursor();
 	};
 
-	///////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////
-	////////	Main Game Engine
+	/*****************
+	 * Main Game Engine
+	 ******/
 	function paint () {
 		displayScreen[screenState]();
-	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
+	} // END PAINT/ GAME ENGINE
 
-	function setScreen (num) {screenState = num;}
+	function setScreen (num) { screenState = num; }
 
 	function setScreenMenu () {       setScreen(0);   }
 	function setScreenGame () {       setScreen(1);   }
@@ -485,12 +476,12 @@ $(document).ready(function () {
 
 	function setBackground (color) {
 		ctx.fillStyle = color;
-		ctx.fillRect(0,0, w, h);
+		ctx.fillRect(0, 0, w, h);
 	}
 
-	//Cursor used in all screens but the game screen
+	// Cursor used in all screens but the game screen
 	function drawCursor () {
-		ctx.fillStyle = "#FFFFFF";
+		ctx.fillStyle = '#FFFFFF';
 		ctx.beginPath();
 		ctx.moveTo(mx, my);
 		ctx.lineTo(mx + 7, my + 9);
@@ -499,7 +490,7 @@ $(document).ready(function () {
 		ctx.fill();
 	}
 
-	//Brick constructor
+	// Brick constructor
 	function Brick (x, y) {
 		this.x = x;
 		this.y = y;
@@ -516,26 +507,24 @@ $(document).ready(function () {
 		generateLevel[level]();
 	}
 
-	////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////
-	///	MOUSE LISTENER
-	//////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////
+	/**********************
+	 * Mouse Listeners
+	 ***********/
 
-	/////////////////
-	///Mouse Click
-	///////////////
-	canvas.addEventListener('click', e => {
-		//Menu
+	/*****************
+	 * Mouse click
+	 ******/
+	canvas.addEventListener('click', () => {
+		// Menu
 		if (screenState === 0) {
 			for (let i = 0; i < 3; i++) {
 				if (my >= h - 210 + (i * 70) && my <= h - 160 + (i * 70)) {
 					if (mx >= 20 && mx <= 220) {
 						console.log(i);
 						switch (i) {
-							//Play
+							// Play
 							case 0:
-								//Goes to first level if no other levels are unlocked
+								// Goes to first level if no other levels are unlocked
 								if (levelsUnlocked > 1) {
 									setScreenSelect();
 								} else {
@@ -543,11 +532,11 @@ $(document).ready(function () {
 									setLevel(1);
 								}
 								break;
-							//...
+							// ...
 							case 1:
-								alert("You expected a change of screens, but it was me, an alert!");
+								alert('You expected a change of screens, but it was me, an alert!');
 								break;
-							//Options
+							// Options
 							case 2:
 								setScreenOptions();
 								break;
@@ -558,31 +547,31 @@ $(document).ready(function () {
 			}
 		}
 
-		//Game
-		if (screenState == 1) {
+		// Game
+		if (screenState === 1) {
 			if (ball.dx === 0 && ball.dy === 0) {
 				ball.dx = Math.floor(Math.random() * 7) - 3;
 				ball.dy = -7;
 			}
 		}
 
-		//Level Finished
-		if (screenState == 2) {
+		// Level Finished
+		if (screenState === 2) {
 			for (let i = 0; i < 2; i++) {
 				if (my >= h - 70 && my <= h - 20) {
 					if (mx >= 20 + (i * 220) && mx <= (i + 1) * 220) {
 						switch (i) {
-							//Main Menu
+							// Main Menu
 							case 0:
 								setScreenMenu();
 								break;
-							//Next Level
+							// Next Level
 							case 1:
-								if (currentLevel == 1) {
+								if (currentLevel === 1) {
 									setScreenGame();
 									setLevel(2);
-								} else if (currentLevel == 2) {
-									alert("That's the end of it!");
+								} else if (currentLevel === 2) {
+									alert('That\'s the end of it!');
 								}
 								break;
 							default:
@@ -592,9 +581,8 @@ $(document).ready(function () {
 			}
 		}
 
-
-		//Level Select
-		if (screenState == 3) {
+		// Level Select
+		if (screenState === 3) {
 			for (let i = 0; i < 2; i++) {
 				for (let j = 0; j < 5; j++) {
 					if (my >= 50 + (i * 100) && my <= 120 + (i * 100)) {
@@ -607,20 +595,19 @@ $(document).ready(function () {
 			}
 		}
 
-
-		//Options
-		if (screenState == 4) {
+		// Options
+		if (screenState === 4) {
 			for (let i = 0; i < 2; i++) {
 				if (my >= 20 + i * 30 && my <= 45 + i * 30) {
 					if (mx >= 20 && mx <= 220) {
 						switch (i) {
 							case 0:
-								//Skip Next Level Screen (Not fail state)
+								// kip Next Level Screen (Not fail state)
 								if (skipNextLevel) skipNextLevel = false;
 								else if (!skipNextLevel) skipNextLevel = true;
 								break;
 							case 1:
-								//Toggle Lives
+								// Toggle Lives
 								if (infiniteLives) infiniteLives = false;
 								else if (!infiniteLives) infiniteLives = true;
 								break;
@@ -632,10 +619,10 @@ $(document).ready(function () {
 		}
 	}, false);
 
-	canvas.addEventListener ('mouseout', () => {});
-	canvas.addEventListener ('mouseover', () => {});
+	canvas.addEventListener('mouseout', () => {});
+	canvas.addEventListener('mouseover', () => {});
 
-	/// Button colour change through mouseover (technically mousemove)
+	// Button colour change through mouseover (technically mousemove)
 	/*
 	Button colour indexes used in each screen
 	0-2     Menu
@@ -645,29 +632,29 @@ $(document).ready(function () {
 	*/
 
 	// index = screenState
-	let hoverResponse = [];
+	const hoverResponse = [];
 
 	// Menu
 	hoverResponse[0] = () => {
 		for (let i = 0; i < 3; i++) {
-			if (my >= h - ((i + 1) * 70) && my <= h -  20 - (i * 70)) {
+			if (my >= h - ((i + 1) * 70) && my <= h - 20 - (i * 70)) {
 				if (mx >= 20 && mx <= 220) {
-					btnCols[i] = "#999999";
-				} else btnCols[i] = "#777777";
-			} else btnCols[i] = "#777777";
+					btnCols[i] = '#999999';
+				} else btnCols[i] = '#777777';
+			} else btnCols[i] = '#777777';
 		}
 	};
 
-	//Nothing for 1
+	// Nothing for 1
 
 	// Level finished
 	hoverResponse[2] = () => {
 		for (let i = 0; i < 2; i++) {
 			if (my >= h - 70 && my <= h - 20) {
 				if (mx >= 20 + (i * 220) && mx <= (i + 1) * 220) {
-					btnCols[i + 3] = "#999999";
-				} else btnCols[i + 3] = "#777777";
-			} else btnCols[i + 3] = "#777777";
+					btnCols[i + 3] = '#999999';
+				} else btnCols[i + 3] = '#777777';
+			} else btnCols[i + 3] = '#777777';
 		}
 	};
 
@@ -677,9 +664,9 @@ $(document).ready(function () {
 			for (let j = 0; j < 5; j++) {
 				if (my >= 50 + (i * 100) && my <= 120 + (i * 100)) {
 					if (mx >= 50 + (j * 100) && mx <= 120 + (j * 100)) {
-						btnCols[i * 5 + j + 5] = "#999999";
-					} else btnCols[i * 5 + j + 5] = "#777777";
-				} else btnCols[i * 5 + j + 5] = "#777777";
+						btnCols[i * 5 + j + 5] = '#999999';
+					} else btnCols[i * 5 + j + 5] = '#777777';
+				} else btnCols[i * 5 + j + 5] = '#777777';
 			}
 		}
 	};
@@ -689,9 +676,9 @@ $(document).ready(function () {
 		for (let i = 0; i < 2; i++) {
 			if (my >= 20 + i * 30 && my <= 45 + i * 30) {
 				if (mx >= 20 && mx <= 220) {
-					btnCols[i + 15] = "#999999";
-				} else btnCols[i + 15] = "#777777";
-			} else btnCols[i + 15] = "#777777";
+					btnCols[i + 15] = '#999999';
+				} else btnCols[i + 15] = '#777777';
+			} else btnCols[i + 15] = '#777777';
 		}
 	};
 
@@ -704,8 +691,7 @@ $(document).ready(function () {
 		hoverResponse[screenState]();
 	}, false);
 
-	function getMousePos (evt)
-	{
+	function getMousePos (evt) {
 		const rect = canvas.getBoundingClientRect();
 		return {
 			x: evt.clientX - rect.left,
@@ -713,10 +699,9 @@ $(document).ready(function () {
 		};
 	}
 
-	///////////////////////////////////
-	//////////////////////////////////
-	///	KEY BOARD INPUT
-	////////////////////////////////
+	/*****************
+	 * KEY BOARD INPUT
+	 ******/
 
 	/*
 	Enter 13
@@ -735,11 +720,11 @@ $(document).ready(function () {
 	-_ 189
 	*/
 
-	let keyMap = [];
+	const keyMap = [];
 
 	// Quick short cut: Warps straight to the 'Level Finished' screen. Feel free to use this to see if things work
 	keyMap[13] = () => {
-		if (screenState === 0 || screenState == 1) {
+		if (screenState === 0 || screenState === 1) {
 			ss2State = 1;
 			setScreenFinished();
 		}
@@ -748,21 +733,21 @@ $(document).ready(function () {
 	// Menu escape
 	keyMap[27] = () => { if (screenState !== 0) setScreenMenu(); };
 	keyMap[32] = () => {
-		//Alternative ball launch: Space
+		// Alternative ball launch: Space
 		if (screenState === 1 && ball.dx === 0 && ball.dy === 0) {
 			ball.dx = Math.floor(Math.random() * 7) - 3;
 			ball.dy = -7;
 		}
 	};
 
-	//Debug
+	// Debug
 	keyMap[187] = () => levelsUnlocked++;
 	keyMap[189] = () => levelsUnlocked--;
 
 	window.addEventListener('keydown', function (evt) {
 		const key = evt.keyCode;
 
-		//prevents arrow scrolling (includes PgUp and PgDown)
+		// prevents arrow scrolling (includes PgUp and PgDown)
 		if ($.inArray(key, ar) > -1) {
 			evt.preventDefault();
 			return false;
