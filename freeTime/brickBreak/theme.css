@@ -1,14 +1,12 @@
-body
-{
-background-color:#C6DDDC;
-margin:5px;
+body {
+	background-color:#C6DDDC;
+	margin:5px;
 }
 
-#canvas
-{
-cursor:none;
-float:left;
-margin-top:0px;
+#canvas {
+	cursor:none;
+	float:left;
+	margin-top:0px;
 }
 
 #sidebar {
@@ -16,10 +14,10 @@ margin-top:0px;
 	float: right;
 	width:100px;
 	padding:10px 0 10px 80px;
-	margin: 0 0 0 50px
-	border: 1px solid black	
+	margin: 0 0 0 50px;
+	border: 1px solid black;
 }
 
 #content{
-	float: right:
+	float: right;
 }
