@@ -214,28 +214,7 @@ $(document).ready(function () {
 		drawCursor();
 	};
 
-	displayScreen[1] = () => {
-		// BG
-		setBackground('#222222');
-
-		// Side Border Overlay
-		ctx.fillStyle = '#000000';
-		ctx.fillRect(0, 0, 100, h);
-		ctx.fillRect(w - 100, 0, 100, h);
-
-		// Ball init
-		ball.display('#119911');
-		ball.move();
-
-		// Paddle init
-		paddle.display('white');
-		// Paddle position based on mouse position
-		// if the paddle is right by the black boundaries
-		if (mx >= 100 + paddle.w / 2 && mx <= w - 100 - paddle.w / 2) {
-			paddle.x = mx - paddle.w / 2;
-		}
-
-		// Paddle collision
+	function bounceBallOffPaddle () {
 		// X Axis check
 		if (ball.x >= paddle.x + ball.r && ball.x <= (paddle.x + paddle.w) - ball.r) {
 			// Y Axis + ball direction check (checks if dy is positive, to be specific)
@@ -251,49 +230,9 @@ $(document).ready(function () {
 			}
 			// Bottom side of the paddle doesn't need bounce as the paddle is placed close to the bottom of the game window
 		}
+	}
 
-		// Ball wall bounce
-		// Upper wall
-		if (ball.y < ball.r) ball.bounceY();
-		// Side walls
-		if (ball.x < ball.r + 100 || ball.x > w - ball.r - 100) ball.bounceX();
-
-		// The bottom is a pit. The ball resets if it goes there
-		if (ball.y - ball.r > h) {
-			ball.resetPosition();
-			paddle.resetPosition();
-			if (!infiniteLives) lives -= 1;
-		}
-
-		// Ball speed limiter, so the slight speed increase won't go too far
-		if (ball.dx > 7) ball.dx = 7;
-		if (ball.dx < -7) ball.dx = -7;
-
-		// Win condition
-		if (bricks.length === 0) {
-			if (!skipNextLevel) {
-				ss2State = 1;
-				setScreenFinished();
-			} else currentLevel++;
-
-			if (!levelBeaten[currentLevel]) {
-				levelBeaten[currentLevel] = true;
-				levelsUnlocked++;
-			}
-		}
-
-		// Lose condition
-		if (lives === 0) {
-			ss2State = 0;
-			setScreenFinished();
-		}
-
-		// Brick display
-		for (let ibd = 0; ibd < bricks.length; ibd++) {
-			bricks[ibd].display('#99FF99');
-		}
-
-		// Brick collision
+	function onBrickCollision () {
 		for (let iCol = 0; iCol < bricks.length; iCol++) {
 			// If within x range
 			if (ball.x >= bricks[iCol].x && ball.x <= bricks[iCol].x + bricks[iCol].w) {
@@ -340,6 +279,71 @@ $(document).ready(function () {
 				}
 			}
 		}
+	}
+
+	displayScreen[1] = () => {
+		// BG
+		setBackground('#222222');
+
+		// Side Border Overlay
+		ctx.fillStyle = '#000000';
+		ctx.fillRect(0, 0, 100, h);
+		ctx.fillRect(w - 100, 0, 100, h);
+
+		// Ball init
+		ball.display('#119911');
+		ball.move();
+
+		// Paddle init
+		paddle.display('white');
+		// Paddle position based on mouse position
+		// if the paddle is right by the black boundaries
+		if (mx >= 100 + paddle.w / 2 && mx <= w - 100 - paddle.w / 2) paddle.x = mx - paddle.w / 2;
+
+		// Paddle collision
+		bounceBallOffPaddle();
+
+		// Ball wall bounce
+		// Upper wall
+		if (ball.y < ball.r) ball.bounceY();
+		// Side walls
+		if (ball.x < ball.r + 100 || ball.x > w - ball.r - 100) ball.bounceX();
+
+		// The bottom is a pit. The ball resets if it goes there
+		if (ball.y - ball.r > h) {
+			ball.resetPosition();
+			paddle.resetPosition();
+			if (!infiniteLives) lives -= 1;
+		}
+
+		// Ball speed limiter, so the slight speed increase won't go too far
+		if (ball.dx > 7) ball.dx = 7;
+		if (ball.dx < -7) ball.dx = -7;
+
+		// Win condition
+		if (bricks.length === 0) {
+			if (!skipNextLevel) {
+				ss2State = 1;
+				setScreenFinished();
+			} else currentLevel++;
+
+			if (!levelBeaten[currentLevel]) {
+				levelBeaten[currentLevel] = true;
+				levelsUnlocked++;
+			}
+		}
+
+		// Lose condition
+		if (lives === 0) {
+			ss2State = 0;
+			setScreenFinished();
+		}
+
+		// Brick display
+		for (let ibd = 0; ibd < bricks.length; ibd++) bricks[ibd].display('#99FF99');
+
+		// Brick collision
+		onBrickCollision();
 	};
 
 	displayScreen[2] = () => {
