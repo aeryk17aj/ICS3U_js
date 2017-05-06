@@ -534,35 +534,10 @@ $(document).ready(function () {
 		if (screenState === 2) nextLevelScreenRespond();
 
 		// Level Select
-		if (screenState === 3) {
-			for (let i = 0; i < 2; i++) {
-				for (let j = 0; j < 5; j++) {
-					if (my >= 50 + (i * 100) && my <= 120 + (i * 100)) {
-						if (mx >= 50 + (j * 100) && mx <= 120 + (j * 100)) {
-							setScreenGame();
-							setLevel((i * 5) + j + 1);
-						}
-					}
-				}
-			}
-		}
+		if (screenState === 3) levelSelectScreenRespond();
 
 		// Options
-		if (screenState === 4) {
-			for (let i = 0; i < 2; i++) {
-				if (my >= 20 + i * 30 && my <= 45 + i * 30) {
-					if (mx >= 20 && mx <= 220) {
-						if (i === 0) {
-							if (skipNextLevel) skipNextLevel = false;
-							else if (!skipNextLevel) skipNextLevel = true;
-						} else if (i === 1) {
-							if (infiniteLives) infiniteLives = false;
-							else if (!infiniteLives) infiniteLives = true;
-						}
-					}
-				}
-			}
-		}
+		if (screenState === 4) optionsScreenRespond();
 	}, false);
 
 	function menuScreenRespond () {
@@ -601,6 +576,35 @@ $(document).ready(function () {
 							} else if (currentLevel === 2) alert('That\'s the end of it!');
 							break;
 						default:
+					}
+				}
+			}
+		}
+	}
+
+	function levelSelectScreenRespond () {
+		for (let i = 0; i < 2; i++) {
+			for (let j = 0; j < 5; j++) {
+				if (my >= 50 + (i * 100) && my <= 120 + (i * 100)) {
+					if (mx >= 50 + (j * 100) && mx <= 120 + (j * 100)) {
+						setScreenGame();
+						setLevel((i * 5) + j + 1);
+					}
+				}
+			}
+		}	
+	}
+
+	function optionsScreenRespond () {
+		for (let i = 0; i < 2; i++) {
+			if (my >= 20 + i * 30 && my <= 45 + i * 30) {
+				if (mx >= 20 && mx <= 220) {
+					if (i === 0) {
+						if (skipNextLevel) skipNextLevel = false;
+						else if (!skipNextLevel) skipNextLevel = true;
+					} else if (i === 1) {
+						if (infiniteLives) infiniteLives = false;
+						else if (!infiniteLives) infiniteLives = true;
 					}
 				}
 			}
