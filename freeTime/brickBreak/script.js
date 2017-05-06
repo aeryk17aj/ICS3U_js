@@ -6,7 +6,7 @@ $(document).ready(function () {
 	const ctx = canvas.getContext('2d');
 	const w = $('#canvas').width();
 	const h = $('#canvas').height();
-	let game_loop;
+	let gameLoop;
 	let mx, my;
 	let screenState;
 	let displayScreen;
@@ -33,7 +33,7 @@ $(document).ready(function () {
 		// array of keys not to move the webpage when pressed
 		ar = [33, 34, 35, 36, 38, 40];
 		// Default is Menu Screen
-		screenState = 0;
+		screenState = 0; displayScreen = [];
 		// 0 - Fail/Out of Lives | 1 - Success/Destroyed all bricks
 		ss2State = 0;
 		// Array of boolean values that tells if level <index> is beaten or not (therefore, index 0 is always false)
@@ -173,8 +173,8 @@ $(document).ready(function () {
 			ctx.fillRect(this.x, this.y, this.w, this.h);
 		};
 
-		if (typeof game_loop !== 'undefined') clearInterval(game_loop);
-		game_loop = setInterval(paint, 14);
+		if (typeof gameLoop !== 'undefined') clearInterval(gameLoop);
+		gameLoop = setInterval(paint, 14);
 		// 7 144fps
 		// 9 120fps
 		// 10 100fps
@@ -262,7 +262,7 @@ $(document).ready(function () {
 		if (ball.y - ball.r > h) {
 			ball.resetPosition();
 			paddle.resetPosition();
-			lives += infiniteLives ? 0 : -1;
+			if (!infiniteLives) lives -= 1;
 		}
 
 		// Ball speed limiter, so the slight speed increase won't go too far
@@ -468,11 +468,11 @@ $(document).ready(function () {
 
 	function setScreen (num) { screenState = num; }
 
-	function setScreenMenu () {       setScreen(0);   }
-	function setScreenGame () {       setScreen(1);   }
-	function setScreenFinished () {   setScreen(2);   }
-	function setScreenSelect () {     setScreen(3);   }
-	function setScreenOptions () {    setScreen(4);   }
+	function setScreenMenu () {     setScreen(0); }
+	function setScreenGame () {     setScreen(1); }
+	function setScreenFinished () { setScreen(2); }
+	function setScreenSelect () {   setScreen(3); }
+	function setScreenOptions () {  setScreen(4); }
 
 	function setBackground (color) {
 		ctx.fillStyle = color;
@@ -498,9 +498,9 @@ $(document).ready(function () {
 		this.h = 20;
 	}
 
-	function resetBricks () {
+	/* function resetBricks () {
 		generateLevel(currentLevel);
-	}
+	}*/
 
 	function setLevel (level) {
 		currentLevel = level;
@@ -516,36 +516,7 @@ $(document).ready(function () {
 	 ******/
 	canvas.addEventListener('click', () => {
 		// Menu
-		if (screenState === 0) {
-			for (let i = 0; i < 3; i++) {
-				if (my >= h - 210 + (i * 70) && my <= h - 160 + (i * 70)) {
-					if (mx >= 20 && mx <= 220) {
-						console.log(i);
-						switch (i) {
-							// Play
-							case 0:
-								// Goes to first level if no other levels are unlocked
-								if (levelsUnlocked > 1) {
-									setScreenSelect();
-								} else {
-									setScreenGame();
-									setLevel(1);
-								}
-								break;
-							// ...
-							case 1:
-								alert('You expected a change of screens, but it was me, an alert!');
-								break;
-							// Options
-							case 2:
-								setScreenOptions();
-								break;
-							default:
-						}
-					}
-				}
-			}
-		}
+		if (screenState === 0) menuScreenRespond();
 
 		// Game
 		if (screenState === 1) {
@@ -556,30 +527,7 @@ $(document).ready(function () {
 		}
 
 		// Level Finished
-		if (screenState === 2) {
-			for (let i = 0; i < 2; i++) {
-				if (my >= h - 70 && my <= h - 20) {
-					if (mx >= 20 + (i * 220) && mx <= (i + 1) * 220) {
-						switch (i) {
-							// Main Menu
-							case 0:
-								setScreenMenu();
-								break;
-							// Next Level
-							case 1:
-								if (currentLevel === 1) {
-									setScreenGame();
-									setLevel(2);
-								} else if (currentLevel === 2) {
-									alert('That\'s the end of it!');
-								}
-								break;
-							default:
-						}
-					}
-				}
-			}
-		}
+		if (screenState === 2) nextLevelScreenRespond();
 
 		// Level Select
 		if (screenState === 3) {
@@ -600,24 +548,60 @@ $(document).ready(function () {
 			for (let i = 0; i < 2; i++) {
 				if (my >= 20 + i * 30 && my <= 45 + i * 30) {
 					if (mx >= 20 && mx <= 220) {
-						switch (i) {
-							case 0:
-								// kip Next Level Screen (Not fail state)
-								if (skipNextLevel) skipNextLevel = false;
-								else if (!skipNextLevel) skipNextLevel = true;
-								break;
-							case 1:
-								// Toggle Lives
-								if (infiniteLives) infiniteLives = false;
-								else if (!infiniteLives) infiniteLives = true;
-								break;
-							default:
+						if (i === 0) {
+							if (skipNextLevel) skipNextLevel = false;
+							else if (!skipNextLevel) skipNextLevel = true;
+						} else if (i === 1) {
+							if (infiniteLives) infiniteLives = false;
+							else if (!infiniteLives) infiniteLives = true;
 						}
 					}
 				}
 			}
 		}
 	}, false);
+
+	function menuScreenRespond () {
+		for (let i = 0; i < 3; i++) {
+			if (my >= h - 210 + (i * 70) && my <= h - 160 + (i * 70)) {
+				if (mx >= 20 && mx <= 220) {
+					// console.log(i);
+					menuButton(i);
+				}
+			}
+		}
+	}
+
+	function menuButton (i) {
+		if (i === 0) {
+			if (levelsUnlocked > 1) setScreenSelect();
+			else {
+				setScreenGame();
+				setLevel(1);
+			}
+		} else if (i === 1) alert('You expected a change of screens, but it was me, an alert!');
+		else if (i === 2) setScreenOptions();
+	}
+
+	function nextLevelScreenRespond () {
+		for (let i = 0; i < 2; i++) {
+			if (my >= h - 70 && my <= h - 20) {
+				if (mx >= 20 + (i * 220) && mx <= (i + 1) * 220) {
+					switch (i) {
+						case 0: // Main Menu
+							setScreenMenu(); break;
+						case 1: // Next Level
+							if (currentLevel === 1) {
+								setScreenGame();
+								setLevel(2);
+							} else if (currentLevel === 2) alert('That\'s the end of it!');
+							break;
+						default:
+					}
+				}
+			}
+		}
+	}
 
 	canvas.addEventListener('mouseout', () => {});
 	canvas.addEventListener('mouseover', () => {});
@@ -646,6 +630,7 @@ $(document).ready(function () {
 	};
 
 	// Nothing for 1
+	hoverResponse[1] = () => { /* ¯\_(ツ)_/¯ */ };
 
 	// Level finished
 	hoverResponse[2] = () => {
