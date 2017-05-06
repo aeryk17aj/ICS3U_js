@@ -544,7 +544,7 @@ $(document).ready(function () {
 	/*****************
 	 * Mouse click
 	 ******/
-	canvas.addEventListener('click', evt => {
+	canvas.addEventListener('click', () => {
 		// Menu screenclicks
 		if (screenState === 0) {
 			if (mx > 520 && mx < 720 && my > 15 && my < 65) {

@@ -1,14 +1,13 @@
 $(document).ready(function () {
-
 	document.body.onmousedown = function () { return false; }; //so page is unselectable
 
-	//Canvas stuff
-	const canvas = $("#canvas")[0];
-	const ctx = canvas.getContext("2d");
-	const w = $("#canvas").width();
-	const h = $("#canvas").height();
+	// Canvas stuff
+	const canvas = $('#canvas')[0];
+	const ctx = canvas.getContext('2d');
+	const w = $('#canvas').width();
+	const h = $('#canvas').height();
 	let mx, my;
-	let game_loop;
+	let gameLoop;
 
 	/////////////////////////////////
 	////////////////////////////////
@@ -17,21 +16,9 @@ $(document).ready(function () {
 	//////	Use this code to get everything in order before your game starts
 	//////////////////////////////
 	/////////////////////////////
-	function init ()
-	{
-
-	//////////
-	///STATE VARIABLES
-
-	//////////////////////
-	///GAME ENGINE START
-	//	This starts your game/program
-	//	"paint is the piece of code that runs over and over again, so put all the stuff you want to draw in here
-	//	"60" sets how fast things should go
-	//	Once you choose a good speed for your program, you will never need to update this file ever again.
-
-		if (typeof game_loop != "undefined") clearInterval(game_loop);
-		game_loop = setInterval(paint, 60);
+	function init () {
+		if (typeof gameLoop !== 'undefined') clearInterval(gameLoop);
+		gameLoop = setInterval(paint, 60);
 	}
 
 	init();
@@ -41,16 +28,13 @@ $(document).ready(function () {
 	////////	Main Game Engine
 	////////////////////////////////////////////////////
 	///////////////////////////////////////////////////
-	function paint ()
-	{
-
+	function paint () {
 		ctx.fillStyle = '#F0F0F0';
-		ctx.fillRect(0,0, w, h);
+		ctx.fillRect(0, 0, w, h);
 
 		ctx.fillStyle = '#808080';
-		ctx.fillText("Hello World.", 100, 50);
-
-	}////////////////////////////////////////////////////////////////////////////////END PAINT/ GAME ENGINE
+		ctx.fillText('Hello World.', 100, 50);
+	} // END PAINT/ GAME ENGINE
 
 	////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////
@@ -65,8 +49,8 @@ $(document).ready(function () {
 
 	}, false);
 
-	canvas.addEventListener ('mouseout', function () {}, false);
-	canvas.addEventListener ('mouseover', function () {}, false);
+	canvas.addEventListener('mouseout', function () {}, false);
+	canvas.addEventListener('mouseover', function () {}, false);
 
 	canvas.addEventListener('mousemove', function (evt) {
 		const mousePos = getMousePos(canvas, evt);
@@ -75,9 +59,7 @@ $(document).ready(function () {
 		my = mousePos.y;
 	}, false);
 
-
-	function getMousePos (canvas, evt)
-	{
+	function getMousePos (canvas, evt) {
 		const rect = canvas.getBoundingClientRect();
 		return {
 			x: evt.clientX - rect.left,
@@ -93,12 +75,10 @@ $(document).ready(function () {
 	window.addEventListener('keydown', function (evt) {
 		const key = evt.keyCode;
 
-	//p 80
-	//r 82
-	//1 49
-	//2 50
-	//3 51
-
+		// p 80
+		// r 82
+		// 1 49
+		// 2 50
+		// 3 51
 	}, false);
-
 });
