@@ -1,21 +1,14 @@
 $(document).ready(function () {
-	document.body.onmousedown = function () { return false; }; //so page is unselectable
+	document.body.onmousedown = function () { return false; }; // so page is unselectable
 
 	// Canvas stuff
 	const canvas = $('#canvas')[0];
 	const ctx = canvas.getContext('2d');
 	const w = $('#canvas').width();
 	const h = $('#canvas').height();
-	let mx, my;
+	// let mx, my;
 	let gameLoop;
 
-	/////////////////////////////////
-	////////////////////////////////
-	////////	GAME INIT
-	///////	Runs this code right away, as soon as the page loads.
-	//////	Use this code to get everything in order before your game starts
-	//////////////////////////////
-	/////////////////////////////
 	function init () {
 		if (typeof gameLoop !== 'undefined') clearInterval(gameLoop);
 		gameLoop = setInterval(paint, 60);
@@ -23,11 +16,6 @@ $(document).ready(function () {
 
 	init();
 
-	///////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////
-	////////	Main Game Engine
-	////////////////////////////////////////////////////
-	///////////////////////////////////////////////////
 	function paint () {
 		ctx.fillStyle = '#F0F0F0';
 		ctx.fillRect(0, 0, w, h);
@@ -36,16 +24,7 @@ $(document).ready(function () {
 		ctx.fillText('Hello World.', 100, 50);
 	} // END PAINT/ GAME ENGINE
 
-	////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////
-	/////	MOUSE LISTENER
-	//////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////
-
-	/////////////////
-	// Mouse Click
-	///////////////
-	canvas.addEventListener('click', function (evt) {
+/* 	canvas.addEventListener('click', function (evt) {
 
 	}, false);
 
@@ -67,11 +46,6 @@ $(document).ready(function () {
 		};
 	}
 
-	///////////////////////////////////
-	//////////////////////////////////
-	////////	KEY BOARD INPUT
-	////////////////////////////////
-
 	window.addEventListener('keydown', function (evt) {
 		const key = evt.keyCode;
 
@@ -80,5 +54,5 @@ $(document).ready(function () {
 		// 1 49
 		// 2 50
 		// 3 51
-	}, false);
+	}, false); */
 });

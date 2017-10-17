@@ -1,34 +1,17 @@
 $(document).ready(function () {
-	document.body.onmousedown = function () { return false; }; //so page is unselectable
+	document.body.onmousedown = function () { return false; }; // so page is unselectable
 
-	//Canvas stuff
+	// Canvas stuff
 	const canvas = $('#canvas')[0];
 	const ctx = canvas.getContext('2d');
 	const w = $('#canvas').width();
 	const h = $('#canvas').height();
-	let mx, my;
+	// let mx, my;
 	let gameLoop;
 
-	/////////////////////////////////
-	////////////////////////////////
-	////////	GAME INIT
-	///////	Runs this code right away, as soon as the page loads.
-	//////	Use this code to get everything in order before your game starts
-	//////////////////////////////
-	/////////////////////////////
 	function init () {
-		//////////
-		///STATE VARIABLES
-
 		if (!isGoodActor(prompt('What\'s your name?', ''))) alert('No. Not qualified');
 		else alert('Hmm... pretty good.');
-
-		//////////////////////
-		///GAME ENGINE START
-		//	This starts your game/program
-		//	'paint is the piece of code that runs over and over again, so put all the stuff you want to draw in here
-		//	'60' sets how fast things should go
-		//	Once you choose a good speed for your program, you will never need to update this file ever again.
 
 		if (typeof gameLoop !== 'undefined') clearInterval(gameLoop);
 		gameLoop = setInterval(paint, 60);
@@ -36,11 +19,6 @@ $(document).ready(function () {
 
 	init();
 
-	///////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////
-	////////	Main Game Engine
-	////////////////////////////////////////////////////
-	///////////////////////////////////////////////////
 	function paint () {
 		ctx.fillStyle = 'white';
 		ctx.fillRect(0, 0, w, h);
@@ -76,14 +54,7 @@ $(document).ready(function () {
 		return yourName === 'Nicky Cage';
 	}
 
-	////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////
-	/////	MOUSE LISTENER
-
-	/////////////////
-	// Mouse Click
-	///////////////
-	canvas.addEventListener('click', function (evt) {
+	/* canvas.addEventListener('click', function (evt) {
 
 	}, false);
 
@@ -105,11 +76,6 @@ $(document).ready(function () {
 		};
 	}
 
-	///////////////////////////////////
-	//////////////////////////////////
-	////////	KEY BOARD INPUT
-	////////////////////////////////
-
 	window.addEventListener('keydown', function (evt) {
 		const key = evt.keyCode;
 
@@ -118,5 +84,5 @@ $(document).ready(function () {
 		// 1 49
 		// 2 50
 		// 3 51
-	}, false);
+	}, false); */
 });

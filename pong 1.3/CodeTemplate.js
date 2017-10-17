@@ -8,7 +8,7 @@ $(document).ready(function () {
 	const h = $('#canvas').height();
 	let mx, my;
 	let gameLoop;
-	let multiball, numBall, randBall;// , targetCool;
+	let multiball, numBall;// , randBall, targetCool;
 	const ballX = [];
 	const ballY = [];
 	let bDx = [];
@@ -51,9 +51,8 @@ $(document).ready(function () {
 		pongLogo.src = 'logo-pong.png';
 
 		// button colors - for pages 0 & 1
-		for (let i = 0; i < 8; i++) {
+		for (let i = 0; i < 8; i++)
 			buttonColor[i] = 'orangered';
-		}
 
 		// Menu screen stuff end////////////////////////////////////////////////////////////////////////////
 
@@ -97,7 +96,7 @@ $(document).ready(function () {
 		// other stuff
 		ar = [33, 34, 35, 36, 37, 38, 39, 40]; // array of keys not to move the webpage when pressed
 		sPlus = 0; // speed boost, adds up when paddle hits
-		randBall = 0;
+		// randBall = 0;
 		// targetCool = 0; // paddle AI random target selector
 
 		// one-time randomizer
@@ -245,11 +244,11 @@ $(document).ready(function () {
 			ballY[i] += bDy[i];
 
 			// Ball speed limiter - precautionary for paddle glitch
-			if (bDx[i] > 10)bDx[i]--;
+			if (bDx[i] > 10) bDx[i]--;
 			else if (bDx[i] < (-10)) bDx[i]++;
 
-			if (bDy[i] > 10)bDy[i]--;
-			else if (bDy[i] < (-10))bDy[i]++;
+			if (bDy[i] > 10) bDy[i]--;
+			else if (bDy[i] < (-10)) bDy[i]++;
 		}
 	}
 
@@ -286,15 +285,13 @@ $(document).ready(function () {
 			// If the ball is manages to go inside the paddle, make the ball go vertical only.
 			if (ballX[i] > p1X - 5 && ballX[i] < p1X + pLength + 5 && ballY[i] > p1Y && ballX[i] < p1Y + pLength) bDx[i] = 0;
 			// Else if the ball is still travelling vertically after it it got out of the paddle, it will go towards the opponent's side.
-			else if (bDx[i] === 0 && ballX[i] > p1X - 5 && ballX[i] < p1X + pLength + 5) {
+			else if (bDx[i] === 0 && ballX[i] > p1X - 5 && ballX[i] < p1X + pLength + 5)
 				if (ballY[i] < p1Y - 10 || ballY[i] > p1Y + pHeight + 10) bDx[i] = Math.floor(Math.random() * 5) + 4;
-			}
 
 			// Right tube
 			if (ballX[i] > p2X - 5 && ballX[i] < p2X + pLength + 5 && ballY[i] > p2Y && ballX[i] < p2Y + pLength) bDx[i] = 0;
-			else if (bDx[i] === 0 && (ballY[i] < p2Y - 10 || ballY[i] > p2Y + pHeight + 10) && ballX[i] > p2X - 5 && ballX[i] < p2X + pLength + 5) {
+			else if (bDx[i] === 0 && (ballY[i] < p2Y - 10 || ballY[i] > p2Y + pHeight + 10) && ballX[i] > p2X - 5 && ballX[i] < p2X + pLength + 5)
 				bDx[i] = Math.floor(Math.random() * 5) - 7;
-			}
 		}
 	}
 
@@ -305,7 +302,7 @@ $(document).ready(function () {
 				ballX.splice(i, 1);
 				ballY.splice(i, 1);
 				numBall--;
-				if (paddleAI) randBall = Math.floor(Math.random() * numBall) + 1;
+				// if (paddleAI) randBall = Math.floor(Math.random() * numBall) + 1;
 			// below here adds the score for the respective side
 			} else if (ballX[i] > w - ballRad && numBall === 1) {
 				resetGame('board');
@@ -320,9 +317,9 @@ $(document).ready(function () {
 	function followBalls () {
 		if (numBall > 1) {
 			// Finds nearest ball
-			for (let i = 0; i < numBall; i++) {
+			for (let i = 0; i < numBall; i++)
 				dist[i] = p2X - ballX[i];
-			}
+
 			minIndex = dist.indexOf(arrayMin(dist));
 
 			// Follows nearest ball - multiball
@@ -335,23 +332,21 @@ $(document).ready(function () {
 					// if the ball is above the paddle
 					if (ballY[minIndex] > pHeight / 2 + 15 && ballY[minIndex] < (h - 15) - pHeight / 2) {
 						// if the distance between the ball and the centre of the paddle is LESS than the paddle speed
-						if ((p2Y + pHeight / 2) - ballY[minIndex] > pSpeed) {
+						if ((p2Y + pHeight / 2) - ballY[minIndex] > pSpeed)
 							// it moves with its max speed
 							p2Y -= pSpeed;
-						} else {
+						else
 							// otherwise, it slows down as it nears the ball
 							p2Y -= Math.sqrt((p2Y + pHeight / 2) - ballY[minIndex]);
-						}
 					// if the ball is below the paddle
 					} else if (ballY[minIndex] > p2Y + pHeight && ballY[minIndex] - (p2Y + pHeight) < pSpeed) {
 						// if the distance between the ball and the centre of the paddle is GREATER than the paddle speed
-						if (ballY[minIndex] - (p2Y + pHeight / 2) > pSpeed) {
+						if (ballY[minIndex] - (p2Y + pHeight / 2) > pSpeed)
 							// it moves with its max speed
 							p2Y += pSpeed;
-						} else {
+						else
 							// otherwise, it slows down as it nears the ball
 							p2Y += ballY[minIndex] - (p2Y + pHeight / 2);
-						}
 					}
 				}
 			}
@@ -368,9 +363,9 @@ $(document).ready(function () {
 	displayScreen[2] = () => {
 		// area divider using squares
 		ctx.fillStyle = '#FFFFFF';
-		for (let i = 0; i < h / 20; i++) {
+		for (let i = 0; i < h / 20; i++)
 			ctx.fillRect((w / 2) - 10, i * 20, 15, 15);
-		}
+
 		ctx.fillRect(0, 0, w, 15);
 		ctx.fillRect(0, h - 15, w, 15);
 
@@ -406,9 +401,8 @@ $(document).ready(function () {
 		onBallSplice();
 
 		// ball ceiling and floor bounce
-		for (let i = 0; i < numBall; i++) {
+		for (let i = 0; i < numBall; i++)
 			if (ballY[i] > h - ballRad - 15 || ballY[i] - ballRad < 15) bDy[i] *= (-1);
-		}
 
 		// Paddle
 		// Display
@@ -525,9 +519,9 @@ $(document).ready(function () {
 	function colGen () {
 		let color = '#';
 		const letters = '0123456789ABCDEF'.split('');
-		for (let i = 0; i < 6; i++) {
+		for (let i = 0; i < 6; i++)
 			color += letters[Math.round(Math.random() * 15)];
-		}
+
 		return color;
 	}
 
@@ -564,23 +558,20 @@ $(document).ready(function () {
 
 		// Options screen clicks
 		if (screenState === 1) {
-			if (mx > 15 && mx < 65 && my > 15 && my < 65 && pSpeed > 5) {
+			if (mx > 15 && mx < 65 && my > 15 && my < 65 && pSpeed > 5)
 				pSpeed--;
-			} else if (mx > 275 && mx < 325 && my > 15 && my < 65 && pSpeed < 25) {
+			else if (mx > 275 && mx < 325 && my > 15 && my < 65 && pSpeed < 25)
 				pSpeed++;
-			}
 
-			if (mx > 15 && mx < 65 && my > 75 && my < 125 && multiball === 'ON') {
+			if (mx > 15 && mx < 65 && my > 75 && my < 125 && multiball === 'ON')
 				multiball = 'OFF';
-			} else if (mx > 275 && mx < 325 && my > 75 && my < 125 && multiball === 'OFF') {
+			else if (mx > 275 && mx < 325 && my > 75 && my < 125 && multiball === 'OFF')
 				multiball = 'ON';
-			}
 		}
 
 		if (screenState === 1 || screenState === 3) {
-			if (mx > 15 && mx < 115 && my > 485 && my < 535) {
+			if (mx > 15 && mx < 115 && my > 485 && my < 535)
 				goToScreen(0);
-			}
 		}
 	});
 
@@ -608,35 +599,30 @@ $(document).ready(function () {
 	window.addEventListener('keydown', evt => {
 		const key = evt.keyCode;
 
-		// p 80
-		// r 82
-		// 1 49
-		// 2 50
-		// 3 51
-		// w 87
-		// s 83
-		// i 87
-		// j 83
-		// up 38
-		// down 40
 		// prevents arrow scrolling (includes PgUp and PgDown)
 		if ($.inArray(key, ar) > -1) {
 			evt.preventDefault();
 			return false;
 		}
+
 		// backspace while in-game returns to menu
 		if (screenState === 2 && key === 8) {
 			resetGame('game');
 			goToScreen(0);
 		}
+
 		// paddle 1 move
-		if (key === 87 && p1Y > 15 && p1Y - 15 > pSpeed) p1Y -= pSpeed;
-		else if (key === 83 && p1Y < h - pHeight - ballRad && h - 15 - (p1Y + pHeight) > pSpeed) p1Y += pSpeed;
+		if (key === 87 && p1Y > 15 && p1Y - 15 > pSpeed)
+			p1Y -= pSpeed;
+		else if (key === 83 && p1Y < h - pHeight - ballRad && h - 15 - (p1Y + pHeight) > pSpeed)
+			p1Y += pSpeed;
 
 		// paddle 2, controllable when using 2-player match
 		if (!paddleAI) {
-			if (key === 73 && p2Y > 15 && p2Y - 15 > pSpeed) p2Y -= pSpeed;
-			else if (key === 75 && p2Y < h - pHeight - ballRad && h - 15 - (p2Y + pHeight) > pSpeed)p2Y += pSpeed;
+			if (key === 73 && p2Y > 15 && p2Y - 15 > pSpeed)
+				p2Y -= pSpeed;
+			else if (key === 75 && p2Y < h - pHeight - ballRad && h - 15 - (p2Y + pHeight) > pSpeed)
+				p2Y += pSpeed;
 		}
 	}, false);
 });

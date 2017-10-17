@@ -7,6 +7,7 @@
 		"es6": true
 	},
 	"rules": {
+		"curly": [1, "multi-or-nest"],
 		"semi": [1, "always"],
 		"indent": [1, "tab", {
 			"SwitchCase": 1

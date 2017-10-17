@@ -6,7 +6,7 @@ $(document).ready(function () {
 	const ctx = canvas.getContext('2d');
 	const w = $('#canvas').width();
 	const h = $('#canvas').height();
-	let mx, my;
+	// let mx, my;
 	let gameLoop;
 
 	// #1
@@ -23,36 +23,26 @@ $(document).ready(function () {
 	let removeNum;
 	let spliced;
 
-	/////////////////////////////////
-	////////////////////////////////
-	////////    GAME INIT
-	/////// Runs this code right away, as soon as the page loads.
-	//////  Use this code to get everything in order before your game starts
-	//////////////////////////////
-	/////////////////////////////
 	function init () {
 		// #1 Prompt
-		for (let i = 0; i < 10; i++) {
-			tenWords[i] = askForAWord();
-		}
+		for (let i = 0; i < 10; i++)
+			tenWords[i] = prompt('Put a word', 'type here');
 
 		// #2 Array
 		threeVerbs = ['tumbling', 'eating', 'reaching'];
 
 		// #3 Array value generator
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < 5; i++)
 			fiveNumbers[i] = Math.floor(Math.random() * 99);
-		}
 
 		// #4 Array value generator + number to be removed
-		for (let i = 0; i < 20; i++) {
+		for (let i = 0; i < 20; i++)
 			twentyNumbers[i] = Math.floor(Math.random() * 10) + 1;
-		}
+
 		// #4 Step 2
 		// removeNum = Math.floor(Math.random()*10);
-		do {
-			removeNum = prompt('What number do you want to be removed? (1-10)', '1');
-		} while (!(removeNum >= 1 && removeNum <= 10)); // It won't stop asking until it gets an input of 1-10
+		do removeNum = prompt('What number do you want to be removed? (1-10)', '1');
+		while (!(removeNum >= 1 && removeNum <= 10)); // It won't stop asking until it gets an input of 1-10
 
 		spliced = 0;
 
@@ -83,7 +73,8 @@ $(document).ready(function () {
 
 		// #1 Display
 		ctx.fillStyle = '#000000';
-		for (let i = 0; i < tenWords.length; i++) ctx.fillText(tenWords[i], 5, 15 + (10 * i));
+		for (let i = 0; i < tenWords.length; i++)
+			ctx.fillText(tenWords[i], 5, 15 + (10 * i));
 
 		// #2 Display
 		ctx.fillText('I am ' + threeVerbs[Math.floor(Math.random() * threeVerbs.length)] + ' towards the sofa', 5, 130);
@@ -94,7 +85,8 @@ $(document).ready(function () {
 		// #3.2 Display
 		for (let i = 0; i < 5; i++) {
 			let moreWords = '';
-			if (i === 0) moreWords = ' Index 0 is always the highest'; else moreWords = ''; // Just being cheap
+			if (i === 0)
+				moreWords = ' Index 0 is always the highest'; else moreWords = ''; // Just being cheap
 			ctx.fillText(fiveNumbers[i].toString() + moreWords, 5, 150 + 10 * i);
 		}
 
@@ -116,19 +108,9 @@ $(document).ready(function () {
 			}
 		}
 		ctx.fillText(spliced + ' numbers were spliced.', 5, 300);
-	} // END PAINT/ GAME ENGINE
-	function askForAWord () {
-		return prompt('Put a word', 'type here');
 	}
 
-	////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////
-	//      MOUSE LISTENER
-
-	/////////////////
-	// Mouse Click
-	///////////////
-	canvas.addEventListener('click', function (evt) {
+	/* canvas.addEventListener('click', function (evt) {
 
 	}, false);
 
@@ -150,11 +132,6 @@ $(document).ready(function () {
 		};
 	}
 
-	///////////////////////////////////
-	//////////////////////////////////
-	//          KEY BOARD INPUT
-	////////////////////////////////
-
 	window.addEventListener('keydown', function (evt) {
 		// const key = evt.keyCode;
 
@@ -163,5 +140,5 @@ $(document).ready(function () {
 		// 1 49
 		// 2 50
 		// 3 51
-	}, false);
+	}, false); */
 });
