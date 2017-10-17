@@ -82,11 +82,11 @@ $(document).ready(function () {
 			ctx.fillText('The soldiers did it!', 100, 320);
 	}
 
-	canvas.addEventListener('click', function (evt) {
+	canvas.addEventListener('click', function () {
 		// Resets both the counter and the battle
 		if (mx > 95 && mx < 95 + 60) {
 			if (my > 20 && my < 20 + 60) {
-				counts.map(_ => 0);
+				counts.map(() => 0);
 
 				soldiers = 25;
 				creatures = 50;
@@ -99,17 +99,17 @@ $(document).ready(function () {
 	// canvas.addEventListener('mouseover', function () {}, false);
 
 	canvas.addEventListener('mousemove', function (evt) {
-		const mousePos = getMousePos(canvas, evt);
+		const { x, y } = getMousePos(canvas, evt);
 
-		mx = mousePos.x;
-		my = mousePos.y;
+		mx = x;
+		my = y;
 	}, false);
 
 	function getMousePos (canvas, evt) {
-		const rect = canvas.getBoundingClientRect();
+		const { left, top } = canvas.getBoundingClientRect();
 		return {
-			x: evt.clientX - rect.left,
-			y: evt.clientY - rect.top
+			x: evt.clientX - left,
+			y: evt.clientY - top
 		};
 	}
 

@@ -49,28 +49,22 @@ $(document).ready(function () {
 			},
 			function () {
 				bricks = [];
-				for (let l1r1 = 0; l1r1 < 3; l1r1++) {
+				for (let l1r1 = 0; l1r1 < 3; l1r1++)
 					bricks[l1r1] = new Brick(240 + l1r1 * 55, 100);
-				}
-				for (let l1r2 = 3; l1r2 < 7; l1r2++) {
+				for (let l1r2 = 3; l1r2 < 7; l1r2++)
 					bricks[l1r2] = new Brick(215 + (l1r2 - 3) * 55, 125);
-				}
-				for (let l1r3 = 7; l1r3 < 10; l1r3++) {
+				for (let l1r3 = 7; l1r3 < 10; l1r3++)
 					bricks[l1r3] = new Brick(240 + (l1r3 - 7) * 55, 150);
-				}
 			},
 			function () {
 				// Going the lazy way with the 'add more bricks' mentality
 				bricks = [];
-				for (let l2r1 = 0; l2r1 < 5; l2r1++) {
+				for (let l2r1 = 0; l2r1 < 5; l2r1++)
 					bricks[l2r1] = new Brick(185 + l2r1 * 55, 100);
-				}
-				for (let l2r2 = 5; l2r2 < 10; l2r2++) {
+				for (let l2r2 = 5; l2r2 < 10; l2r2++)
 					bricks[l2r2] = new Brick(185 + (l2r2 - 5) * 55, 125);
-				}
-				for (let l2r3 = 10; l2r3 < 15; l2r3++) {
+				for (let l2r3 = 10; l2r3 < 15; l2r3++)
 					bricks[l2r3] = new Brick(185 + (l2r3 - 10) * 55, 150);
-				}
 			},
 			function () {
 				// NO OP; Level 3 would've existed with more time
@@ -88,9 +82,8 @@ $(document).ready(function () {
 		15-16   Options
 		*/
 		btnCols = [];
-		for (let ibc = 0; ibc < 17; ibc++) {
+		for (let ibc = 0; ibc < 17; ibc++)
 			btnCols.push('#777777');
-		}
 
 		levelsUnlocked = 1;
 		skipNextLevel = false;
@@ -472,11 +465,13 @@ $(document).ready(function () {
 
 	function setScreen (num) { screenState = num; }
 
+	/* eslint-disable no-multi-spaces */
 	function setScreenMenu () {     setScreen(0); }
 	function setScreenGame () {     setScreen(1); }
 	function setScreenFinished () { setScreen(2); }
 	function setScreenSelect () {   setScreen(3); }
 	function setScreenOptions () {  setScreen(4); }
+	/* eslint-enable */
 
 	function setBackground (color) {
 		ctx.fillStyle = color;
@@ -520,7 +515,8 @@ $(document).ready(function () {
 	 ******/
 	canvas.addEventListener('click', () => {
 		// Menu
-		if (screenState === 0) menuScreenRespond();
+		if (screenState === 0)
+			menuScreenRespond();
 
 		// Game
 		if (screenState === 1) {
@@ -531,13 +527,16 @@ $(document).ready(function () {
 		}
 
 		// Level Finished
-		if (screenState === 2) nextLevelScreenRespond();
+		if (screenState === 2)
+			nextLevelScreenRespond();
 
 		// Level Select
-		if (screenState === 3) levelSelectScreenRespond();
+		if (screenState === 3)
+			levelSelectScreenRespond();
 
 		// Options
-		if (screenState === 4) optionsScreenRespond();
+		if (screenState === 4)
+			optionsScreenRespond();
 	}, false);
 
 	function menuScreenRespond () {
@@ -592,7 +591,7 @@ $(document).ready(function () {
 					}
 				}
 			}
-		}	
+		}
 	}
 
 	function optionsScreenRespond () {
@@ -630,10 +629,12 @@ $(document).ready(function () {
 	hoverResponse[0] = () => {
 		for (let i = 0; i < 3; i++) {
 			if (my >= h - ((i + 1) * 70) && my <= h - 20 - (i * 70)) {
-				if (mx >= 20 && mx <= 220) {
+				if (mx >= 20 && mx <= 220)
 					btnCols[i] = '#999999';
-				} else btnCols[i] = '#777777';
-			} else btnCols[i] = '#777777';
+				else
+					btnCols[i] = '#777777';
+			} else
+				btnCols[i] = '#777777';
 		}
 	};
 
@@ -644,10 +645,12 @@ $(document).ready(function () {
 	hoverResponse[2] = () => {
 		for (let i = 0; i < 2; i++) {
 			if (my >= h - 70 && my <= h - 20) {
-				if (mx >= 20 + (i * 220) && mx <= (i + 1) * 220) {
+				if (mx >= 20 + (i * 220) && mx <= (i + 1) * 220)
 					btnCols[i + 3] = '#999999';
-				} else btnCols[i + 3] = '#777777';
-			} else btnCols[i + 3] = '#777777';
+				else
+					btnCols[i + 3] = '#777777';
+			} else
+				btnCols[i + 3] = '#777777';
 		}
 	};
 
@@ -656,10 +659,12 @@ $(document).ready(function () {
 		for (let i = 0; i < 2; i++) {
 			for (let j = 0; j < 5; j++) {
 				if (my >= 50 + (i * 100) && my <= 120 + (i * 100)) {
-					if (mx >= 50 + (j * 100) && mx <= 120 + (j * 100)) {
+					if (mx >= 50 + (j * 100) && mx <= 120 + (j * 100))
 						btnCols[i * 5 + j + 5] = '#999999';
-					} else btnCols[i * 5 + j + 5] = '#777777';
-				} else btnCols[i * 5 + j + 5] = '#777777';
+					else
+						btnCols[i * 5 + j + 5] = '#777777';
+				} else
+					btnCols[i * 5 + j + 5] = '#777777';
 			}
 		}
 	};
@@ -668,10 +673,12 @@ $(document).ready(function () {
 	hoverResponse[4] = () => {
 		for (let i = 0; i < 2; i++) {
 			if (my >= 20 + i * 30 && my <= 45 + i * 30) {
-				if (mx >= 20 && mx <= 220) {
+				if (mx >= 20 && mx <= 220)
 					btnCols[i + 15] = '#999999';
-				} else btnCols[i + 15] = '#777777';
-			} else btnCols[i + 15] = '#777777';
+				else
+					btnCols[i + 15] = '#777777';
+			} else
+				btnCols[i + 15] = '#777777';
 		}
 	};
 
